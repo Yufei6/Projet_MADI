@@ -197,9 +197,37 @@ def initialize():
 	wn.config(text=str(cost[4]))
 	ws.config(text='     total = '+str(cost[0]))
 
-def display_policy(policy):
-	window = tk.Tk()
+def display_policy():
+	window = Tk()
 	window.title("Politique Total")
+	cv = Canvas(window, width = Largeur, height =Hauteur, bg =mywhite)
+	for i in range(nblignes):
+		for j in range(nbcolonnes):          
+			y =zoom*20*i+20
+			x =zoom*20*j+20
+			if g[i,j,0]>0:            
+				#Canevas.create_oval(x+zoom*(10-3),y+zoom*(10-3),x+zoom*(10+3),y+zoom*(10+3),width=1,outline=color[g[i,j]],fill=color[g[i,j]])
+				if policy[i][j]==0:
+					action_policy = '↑'
+				elif policy[i][j]==1:
+					action_policy = '↓'
+				elif policy[i][j]==2:
+					action_policy = '←'
+				elif policy[i][j]==3:
+					action_policy = '→'
+				cv.create_text(x+zoom*(10),y+zoom*(10), text=action_policy,fill=color[g[i,j,0]],font = "Verdana "+str(int(6*zoom))+" bold")
+			else:
+				cv.create_rectangle(x, y, x+zoom*20, y+zoom*20, fill=mywalls)
+	for i in range(nblignes+2):
+		ni=zoom*20*i+20
+		cv.create_line(20, ni, Largeur-20,ni)
+	for j in range(nbcolonnes+2):
+		nj=zoom*20*j+20
+		cv.create_line(nj, 20, nj, Hauteur-20)
+	cv.focus_set()
+	cv.pack(padx =5, pady =5)
+	window.mainloop()
+
 
 	
 
@@ -222,6 +250,15 @@ def Clavier(event):
 	# deplacement vers la gauche
 	if touche == 'Left' and check_left(cj,li):
 		move_proba_left(cj, li)
+	if touche == 'Space':
+		if policy[cj,li]==0:
+			move_proba_up(cj, li)
+		elif policy[cj,li]==1:
+			move_proba_down(cj, li)
+		elif policy[cj,li]==2:
+			move_proba_left(cj, li)
+		elif policy[cj,li]==3:
+			move_proba_right(cj, li)
 	# on dessine le pion a sa nouvelle position
 	Canevas.coords(Pion,PosX -9*zoom, PosY -9*zoom, PosX +9*zoom, PosY +9*zoom)
 	cost[0]=0    
@@ -273,7 +310,7 @@ def colordraw(g,nblignes,nbcolonnes):
 			x =zoom*20*j+20
 			if g[i,j,0]>0:            
 				#Canevas.create_oval(x+zoom*(10-3),y+zoom*(10-3),x+zoom*(10+3),y+zoom*(10+3),width=1,outline=color[g[i,j]],fill=color[g[i,j]])
-				Canevas.create_text(x+zoom*(10),y+zoom*(10), text='↑'+str(g[i,j,1]),fill=color[g[i,j,0]],font = "Verdana "+str(int(6*zoom))+" bold")
+				Canevas.create_text(x+zoom*(10),y+zoom*(10), text=str(g[i,j,1]),fill=color[g[i,j,0]],font = "Verdana "+str(int(6*zoom))+" bold")
 			else:
 				Canevas.create_rectangle(x, y, x+zoom*20, y+zoom*20, fill=mywalls)
 	print("GGG",g)
@@ -337,6 +374,7 @@ if __name__ == "__main__":
 	# Creation d'un widget Button (bouton Quitter)
 	Button(Mafenetre, text ='Restart', command = initialize).pack(side=LEFT,padx=5,pady=5)
 	Button(Mafenetre, text ='Quit', command = Mafenetre.destroy).pack(side=LEFT,padx=5,pady=5)
+	Button(Mafenetre, text ='Policy', command = display_policy).pack(side=LEFT,padx=5,pady=5)
 
 	w = Label(Mafenetre, text='     Costs: ', fg=myblack,font = "Verdana "+str(int(5*zoom))+" bold")
 	w.pack(side=LEFT,padx=5,pady=5) 
