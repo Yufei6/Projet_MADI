@@ -27,7 +27,7 @@ def check_left(cj,li):
 
 def move_proba_up(cj, li):
 	global PosX,PosY,cost,g
-	cu = check_left(cj,li)
+	cu = check_up(cj,li)
 	cd = check_down(cj,li)
 	cl = check_left(cj,li)
 	cr = check_right(cj,li)
@@ -67,7 +67,7 @@ def move_proba_up(cj, li):
 
 def move_proba_down(cj, li):
 	global PosX,PosY,cost,g
-	cu = check_left(cj,li)
+	cu = check_up(cj,li)
 	cd = check_down(cj,li)
 	cl = check_left(cj,li)
 	cr = check_right(cj,li)
@@ -106,7 +106,7 @@ def move_proba_down(cj, li):
 
 def move_proba_right(cj, li):
 	global PosX,PosY,cost,g
-	cu = check_left(cj,li)
+	cu = check_up(cj,li)
 	cd = check_down(cj,li)
 	cl = check_left(cj,li)
 	cr = check_right(cj,li)
@@ -145,7 +145,7 @@ def move_proba_right(cj, li):
 
 def move_proba_left(cj, li):
 	global PosX,PosY,cost,g
-	cu = check_left(cj,li)
+	cu = check_up(cj,li)
 	cd = check_down(cj,li)
 	cl = check_left(cj,li)
 	cr = check_right(cj,li)
@@ -196,6 +196,11 @@ def initialize():
 	wr.config(text=str(cost[3]))
 	wn.config(text=str(cost[4]))
 	ws.config(text='     total = '+str(cost[0]))
+
+def display_policy(policy):
+	window = tk.Tk()
+	window.title("Politique Total")
+
 	
 
 
@@ -268,7 +273,7 @@ def colordraw(g,nblignes,nbcolonnes):
 			x =zoom*20*j+20
 			if g[i,j,0]>0:            
 				#Canevas.create_oval(x+zoom*(10-3),y+zoom*(10-3),x+zoom*(10+3),y+zoom*(10+3),width=1,outline=color[g[i,j]],fill=color[g[i,j]])
-				Canevas.create_text(x+zoom*(10),y+zoom*(10), text=str(g[i,j,1]),fill=color[g[i,j,0]],font = "Verdana "+str(int(6*zoom))+" bold")
+				Canevas.create_text(x+zoom*(10),y+zoom*(10), text='↑'+str(g[i,j,1]),fill=color[g[i,j,0]],font = "Verdana "+str(int(6*zoom))+" bold")
 			else:
 				Canevas.create_rectangle(x, y, x+zoom*20, y+zoom*20, fill=mywalls)
 	print("GGG",g)
@@ -278,7 +283,7 @@ def colordraw(g,nblignes,nbcolonnes):
 
 if __name__ == "__main__":
 	#taille de la grille
-	nblignes=20
+	nblignes=10
 	nbcolonnes=15
 	proba = 0.8
 	zoom=2
