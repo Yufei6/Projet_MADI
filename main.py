@@ -1,4 +1,5 @@
 from tkinter import *
+from recherche_policy import *
 import numpy as np
 
 def check_up(cj,li):
@@ -187,7 +188,7 @@ def initialize():
 # position initiale du robot
 	PosX = 20+10*zoom
 	PosY = 20+10*zoom
-	for k in range(5):
+	for k in range(6):
 		cost[k]=0
 # cout et affichage
 	Canevas.coords(Pion,PosX -9*zoom, PosY -9*zoom, PosX +9*zoom, PosY +9*zoom)
@@ -215,7 +216,7 @@ def display_policy():
 					action_policy = '←'
 				elif policy[i][j]==3:
 					action_policy = '→'
-				cv.create_text(x+zoom*(10),y+zoom*(10), text=action_policy,fill=color[g[i,j,0]],font = "Verdana "+str(int(6*zoom))+" bold")
+				cv.create_text(x+zoom*(10),y+zoom*(10), text=action_policy,fill=mygreen,font = "Verdana "+str(int(6*zoom))+" bold")
 			else:
 				cv.create_rectangle(x, y, x+zoom*20, y+zoom*20, fill=mywalls)
 	for i in range(nblignes+2):
@@ -313,39 +314,41 @@ def colordraw(g,nblignes,nbcolonnes):
 				Canevas.create_text(x+zoom*(10),y+zoom*(10), text=str(g[i,j,1]),fill=color[g[i,j,0]],font = "Verdana "+str(int(6*zoom))+" bold")
 			else:
 				Canevas.create_rectangle(x, y, x+zoom*20, y+zoom*20, fill=mywalls)
-	print("GGG",g)
+	set_objectif(g,nblignes, nbcolonnes, 1000)
+	#print("GGG",g)
+
+def set_objectif(g, nblignes,nbcolonnes, value_objectif):
+	i = nblignes-1
+	j = nbcolonnes-1
+	y =zoom*20*i+20
+	x =zoom*20*j+20
+	g[i, j, 0] = -1000
+	g[i, j, 1] = value_objectif
+	Canevas.create_rectangle(x, y, x+zoom*20, y+zoom*20,  fill=myred)
+
+
 
 def set_parameters(nbligness , nbcolonness, probas, weights):
 	global nblignes , nbcolonnes, proba, weight
 	nblignes = nbligness
 	nbcolonnes = nbcolonness
 	proba = probas
-	weight = np.zeros(5, dtype=np.int)
+	weight = np.zeros(6, dtype=np.int)
 	weight[1] = weights[1]
 	weight[2] = weights[2]
 	weight[3] = weights[3]
 	weight[4] = weights[4]
+	weight[5] = weights[5]
 
 
+def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _PosY=20):
+	global g, cost, Pion, zoom, PosX, PosY, Canevas, policy, Largeur, Hauteur
+	global color, myred, mygreen, myblue, mygrey, myyellow, myblack, mywalls, mywhite, w, wg, wb, wr, wn, ws
 
-
-
-if __name__ == "__main__":
-	#taille de la grille
-	"""
-	nblignes=10
-	nbcolonnes=15
-	proba = 0.8
-	weight= np.zeros(5, dtype=np.int)
-	weight[1] = 1
-	weight[2] = 1
-	weight[3] = 1
-	weight[4] = 1
-	"""
-
-	set_parameters(10, 15, 0.8, [0,1,2,3,4])
-	zoom=2
-
+	set_parameters(_nblignes , _nbcolonness, _proba, _weight)
+	zoom = _zoom
+	PosX = _PosX
+	PosY = _PosY
 
 	Mafenetre = Tk()
 	Mafenetre.title('MADI PROJET')
@@ -360,7 +363,8 @@ if __name__ == "__main__":
 	 
 	# valeurs de la grille
 	g = np.zeros((nblignes,nbcolonnes,2), dtype=np.int)
-	cost= np.zeros(5, dtype=np.int)
+	cost= np.zeros(6, dtype=np.int)
+
 	
 
 	myred="#F70B42"
@@ -382,10 +386,13 @@ if __name__ == "__main__":
 		nj=zoom*20*j+20
 		Canevas.create_line(nj, 20, nj, Hauteur-20)
 	colordraw(g,nblignes,nbcolonnes)
-	Pion = Canevas.create_oval(PosX-10,PosY-10,PosX+10,PosY+10,width=2,outline='black',fill=myyellow)
+	Pion = Canevas.create_oval(PosX -9*zoom, PosY -9*zoom, PosX +9*zoom, PosY +9*zoom,width=2,outline='black',fill=myyellow)
 	Canevas.focus_set()
 	Canevas.bind('<Key>',Clavier)
 	Canevas.pack(padx =5, pady =5)
+
+
+	policy = itervalue(g, nblignes, nbcolonnes, proba, gamma=0.9 , e= 0.001)
 
 	# Craation d'un widget Button (bouton Quitter)
 	# Creation d'un widget Button (bouton Quitter)
@@ -406,3 +413,14 @@ if __name__ == "__main__":
 	ws = Label(Mafenetre, text='     total = '+str(cost[0]),fg=myblack,font = "Verdana "+str(int(5*zoom))+" bold")
 	ws.pack(side=LEFT,padx=5,pady=5) 
 	Mafenetre.mainloop()
+
+
+
+if __name__ == "__main__":
+	_nblignes = 10
+	_nbcolonness = 15
+	_proba = 0.8
+	_weight = [0,1,2,3,4,-1]
+	init_game(_nblignes , _nbcolonness, _proba, _weight)
+
+	

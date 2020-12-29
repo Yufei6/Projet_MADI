@@ -1,8 +1,11 @@
 import numpy as np
+import math
 
 def calculV(grill, n,m,i,j,a,p,tab,gamma):
-    c=i+1
-    d=j+1
+    c=i
+    d=j
+    i-=1
+    j-=1
     p1=(1+p)/2
     p2=(1-p)/2
     if a==0:#up
@@ -73,26 +76,46 @@ def calculV(grill, n,m,i,j,a,p,tab,gamma):
             
             a=-grill[c][d+1][0]*p-grill[c+1][d][0]*p2+grill[c-1][d][0]*p2\
             +gamma*(tab[i][j+1]*p+tab[i+1][j]*p2+tab[i-1][j]*p2)
+    return a
+
+def change_grill(grill,n,m):
+    new_grill = np.zeros((n+2, m+2, 2))
+    for i in range(n+2):
+        for j in range(m+2):
+            if i==0 or i==n+1 or j==0 or j==m+1:
+                new_grill[i,j,0] = 0
+                new_grill[i,j,1] = 0
+            else:
+                new_grill[i,j,0] = grill[i-1,j-1,0]
+                new_grill[i,j,1] = grill[i-1,j-1,1]
+    return new_grill
         
 def itervalue(grill, n,m,p,gamma,e):
-    tabaction=np.zeros(n,m)
-    tab=np.zeros(n,m)
-    tab_ancien= np.zeros(n,m)
-    for t in range(10000):
-        tab_ancien=tab
+    #print("grill",grill)
+    grill = change_grill(grill, n, m)
+    tabaction=np.zeros((n,m))
+    tab=np.zeros((n,m))
+    tab_ancien= np.zeros((n,m))
+    iteration = 0
+    while True:
+        tab_ancien= np.copy(tab)
         for i in range(n):
             for j in range(m):
-                temp=np.zeros(3)
-                for a in range(3):
-                    temp[a]=calculV(grill,n,m,i,j,a,p,tab_ancien,gamma)
-                tab[i][j]=max(temp)
-                tabaction[i][j]=np.argmax(temp)
+                if not (i==n-1 and j ==m-1):
+                    temp=np.zeros(4)
+                    for a in range(4):
+                        temp[a]=calculV(grill,n,m,i+1,j+1,a,p,tab_ancien,gamma)
+                    tab[i][j]=max(temp)
+                    tabaction[i][j]=np.argmax(temp)
+        #print("tab",tab)
         diffmax=0
         for i in range(n):
             for j in range(m):
-                diff=tab[i][j]-tab_ancien[i][j]
-                if diff>diffmax:
-                    diffmax=diff
-        if diffmax<e:
-            break
-    return tabaction
+                diff=abs(tab[i][j]-tab_ancien[i][j])
+                if diff > diffmax:
+                    diffmax = diff
+        print("diffmax", diffmax, " iteration",iteration)
+        if diffmax <= e:
+            print("tabaction",tabaction)
+            return tabaction
+        iteration +=1
