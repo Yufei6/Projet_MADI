@@ -15,6 +15,20 @@ def transfer_objectif(grill, objectif):
                 grill[i,j,0] = -1 * objectif
     return grill
 
+def transfer_color(grill, objectif):
+    for i in range(len(grill)):
+        for j in range(len(grill[0])):
+            if grill[i,j,0]==4:
+                grill[i,j,0] = grill[i,j,0] * 10000**3
+            elif grill[i,j,0]==3:
+                grill[i,j,0] = grill[i,j,0] * 10000**2
+            elif grill[i,j,0]==2:
+                grill[i,j,0] = grill[i,j,0] * 10000
+            elif grill[i,j,0]==-1 * objectif:
+                grill[i,j,0] = grill[i,j,0] * 10000**3
+                print("change",grill[i,j,0])
+    return grill
+
 def calculV(grill, n,m,i,j,a,p,tab,gamma):
     c=i+1
     d=j+1
@@ -22,73 +36,73 @@ def calculV(grill, n,m,i,j,a,p,tab,gamma):
     p2=(1-p)/2
     if a==0:#up
         if(grill[c-1][d][0]==0):
-            a=tab[i][j]-grill[c][d][0]
+            b=tab[i][j]-grill[c][d][0]
         elif grill[c][d-1][0]==0 and grill[c][d+1][0]==0:
-            a= -grill[c-1][d][0]+gamma*tab[i-1][j]
+            b= -grill[c-1][d][0]+gamma*tab[i-1][j]
         elif grill[c][d-1][0]==0 and grill[c][d+1][0]!=0:
-            a=-grill[c-1][d][0]*p1-grill[c][d+1][0]*p2+gamma*(tab[i-1][j]*p1+tab[i][j+1]*p2)
+            b=-grill[c-1][d][0]*p1-grill[c][d+1][0]*p2+gamma*(tab[i-1][j]*p1+tab[i][j+1]*p2)
         elif grill[c][d-1][0]!=0 and grill[c][d+1][0]==0:
-            a=-grill[c-1][d][0]*p1-grill[c][d-1][0]*p2+gamma*(tab[i-1][j]*p1+tab[i][j-1]*p2)
+            b=-grill[c-1][d][0]*p1-grill[c][d-1][0]*p2+gamma*(tab[i-1][j]*p1+tab[i][j-1]*p2)
         else: 
-            a=-grill[c-1][d][0]*p-grill[c][d-1][0]*p2+grill[c][d+1][0]*p2\
+            b=-grill[c-1][d][0]*p-grill[c][d-1][0]*p2+grill[c][d+1][0]*p2\
             +gamma*(tab[i-1][j]*p+tab[i][j-1]*p2+tab[i][j+1]*p2)
     if a==1:#down
         if(grill[c+1][d][0]==0):
-            a=tab[i][j]-grill[c][d][0]
+            b=tab[i][j]-grill[c][d][0]
         elif grill[c][d-1][0]==0 and grill[c][d+1][0]==0:
-            a= -grill[c+1][d][0]\
+            b= -grill[c+1][d][0]\
             +gamma*tab[i+1][j]
         elif grill[c][d-1][0]==0 and grill[c][d+1][0]!=0:
-            a=-grill[c+1][d][0]*p1-grill[c][d+1][0]*p2\
+            b=-grill[c+1][d][0]*p1-grill[c][d+1][0]*p2\
             +gamma*(tab[i+1][j]*p1+tab[i][j+1]*p2)
         elif grill[c][d-1][0]!=0 and grill[c][d+1][0]==0:
-            a=-grill[c+1][d][0]*p1-grill[c][d-1][0]*p2\
+            b=-grill[c+1][d][0]*p1-grill[c][d-1][0]*p2\
             +gamma*(tab[i+1][j]*p1+tab[i][j-1]*p2)
         else: 
-            a=-grill[c+1][d][0]*p-grill[c][d-1][0]*p2+grill[c][d+1][0]*p2\
+            b=-grill[c+1][d][0]*p-grill[c][d-1][0]*p2+grill[c][d+1][0]*p2\
             +gamma*(tab[i+1][j]*p+tab[i][j-1]*p2+tab[i][j+1]*p2)
     if a==2:#left
         if(grill[c][d-1][0]==0):
             
-            a=tab[i][j]-grill[c][d][0]
+            b=tab[i][j]-grill[c][d][0]
         elif grill[c+1][d][0]==0 and grill[c-1][d][0]==0:
             
-            a= -grill[c][d-1][0]\
+            b= -grill[c][d-1][0]\
             +gamma*tab[i][j-1]
         elif grill[c+1][d][0]==0 and grill[c-1][d][0]!=0:
             
-            a=-grill[c][d-1][0]*p1-grill[c-1][d][0]*p2\
+            b=-grill[c][d-1][0]*p1-grill[c-1][d][0]*p2\
             +gamma*(tab[i][j-1]*p1+tab[i-1][j]*p2)
         elif grill[c+1][d][0]!=0 and grill[c-1][d][0]==0:
             
-            a=-grill[c][d-1][0]*p1-grill[c+1][d][0]*p2\
+            b=-grill[c][d-1][0]*p1-grill[c+1][d][0]*p2\
             +gamma*(tab[i][j-1]*p1+tab[i+1][j]*p2)
         else:
             
-            a=-grill[c][d-1][0]*p-grill[c+1][d][0]*p2+grill[c-1][d][0]*p2\
+            b=-grill[c][d-1][0]*p-grill[c+1][d][0]*p2+grill[c-1][d][0]*p2\
             +gamma*(tab[i][j-1]*p+tab[i+1][j]*p2+tab[i-1][j]*p2)
         
     if a==3:#right
         if(grill[c][d+1][0]==0):
             
-            a=tab[i][j]-grill[c][d][0]
+            b=tab[i][j]-grill[c][d][0]
         elif grill[c+1][d][0]==0 and grill[c-1][d][0]==0:
             
-            a= -grill[c][d+1][0]\
+            b= -grill[c][d+1][0]\
             +gamma*tab[i][j+1]
         elif grill[c+1][d][0]==0 and grill[c-1][d][0]!=0:
             
-            a=-grill[c][d+1][0]*p1-grill[c-1][d][0]*p2\
+            b=-grill[c][d+1][0]*p1-grill[c-1][d][0]*p2\
             +gamma*(tab[i][j+1]*p1+tab[i-1][j]*p2)
         elif grill[c+1][d][0]!=0 and grill[c-1][d][0]==0:
             
-            a=-grill[c][d+1][0]*p1-grill[c+1][d][0]*p2\
+            b=-grill[c][d+1][0]*p1-grill[c+1][d][0]*p2\
             +gamma*(tab[i][j+1]*p1+tab[i+1][j]*p2)
         else:
             
-            a=-grill[c][d+1][0]*p-grill[c+1][d][0]*p2+grill[c-1][d][0]*p2\
+            b=-grill[c][d+1][0]*p-grill[c+1][d][0]*p2+grill[c-1][d][0]*p2\
             +gamma*(tab[i][j+1]*p+tab[i+1][j]*p2+tab[i-1][j]*p2)
-    return a
+    return b
 
 def change_grill(grill,n,m, objectif):
     grill = transfer_objectif(grill, objectif)
@@ -111,10 +125,12 @@ def check_grill(i,j,grill):
         return False
     return True
         
-def itervalue(grill, n,m,p,gamma,e, objectif,_q=1):
+def itervalue(grill, n,m,p,gamma,e, objectif,_q=1, _color=False):
     #print("grill",grill)
     grill = transfer_puissance(grill,_q)
     grill = change_grill(grill, n, m, objectif)
+    if _color:
+        grill = transfer_color(grill,objectif)
     tabaction=np.zeros((n,m))
     tab=np.zeros((n,m))
     tab_ancien= np.zeros((n,m))
@@ -140,6 +156,6 @@ def itervalue(grill, n,m,p,gamma,e, objectif,_q=1):
                     diffmax = diff
         #print("diffmax", diffmax, " iteration",iteration)
         if diffmax <= e:
-            p#rint("tabaction",tabaction)
+            #print("tabaction",tabaction)
+            #print("tab",tab)
             return tabaction, iteration
-        
