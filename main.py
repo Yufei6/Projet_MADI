@@ -1,10 +1,12 @@
 from tkinter import *
 from recherche_policy import *
 import numpy as np
+import time
+import matplotlib.pyplot as plt
 
 def check_up(cj,li):
 	if li>0:
-		if g[li-1,cj][0]>0:
+		if g[li-1,cj][0]>0 :
 			return True
 	return False
 
@@ -206,7 +208,7 @@ def display_policy():
 		for j in range(nbcolonnes):          
 			y =zoom*20*i+20
 			x =zoom*20*j+20
-			if g[i,j,0]>0:            
+			if g[i,j,0]>0:       
 				#Canevas.create_oval(x+zoom*(10-3),y+zoom*(10-3),x+zoom*(10+3),y+zoom*(10+3),width=1,outline=color[g[i,j]],fill=color[g[i,j]])
 				if policy[i][j]==0:
 					action_policy = '↑'
@@ -272,7 +274,7 @@ def Clavier(event):
 	ws.config(text='     total = '+str(cost[0]))
 
 
-def colordraw(g,nblignes,nbcolonnes):
+def colordraw(g,nblignes,nbcolonnes, _display=True):
 	pblanc=0.1
 	pverte=0.3
 	pbleue=0.25
@@ -305,26 +307,30 @@ def colordraw(g,nblignes,nbcolonnes):
 	g[nblignes-1,nbcolonnes-1]=np.random.randint(1, 3 + 1)
 	g[nblignes-2,nbcolonnes-1]=np.random.randint(1, 3 + 1)
 	g[nblignes-1,nbcolonnes-2]=np.random.randint(1, 3 + 1)
-	for i in range(nblignes):
-		for j in range(nbcolonnes):          
-			y =zoom*20*i+20
-			x =zoom*20*j+20
-			if g[i,j,0]>0:            
-				#Canevas.create_oval(x+zoom*(10-3),y+zoom*(10-3),x+zoom*(10+3),y+zoom*(10+3),width=1,outline=color[g[i,j]],fill=color[g[i,j]])
-				Canevas.create_text(x+zoom*(10),y+zoom*(10), text=str(g[i,j,1]),fill=color[g[i,j,0]],font = "Verdana "+str(int(6*zoom))+" bold")
-			else:
-				Canevas.create_rectangle(x, y, x+zoom*20, y+zoom*20, fill=mywalls)
-	set_objectif(g,nblignes, nbcolonnes, 1000)
+	if _display:
+		for i in range(nblignes):
+			for j in range(nbcolonnes):          
+				y =zoom*20*i+20
+				x =zoom*20*j+20
+				if g[i,j,0]>0:            
+					#Canevas.create_oval(x+zoom*(10-3),y+zoom*(10-3),x+zoom*(10+3),y+zoom*(10+3),width=1,outline=color[g[i,j]],fill=color[g[i,j]])
+					Canevas.create_text(x+zoom*(10),y+zoom*(10), text=str(g[i,j,1]),fill=color[g[i,j,0]],font = "Verdana "+str(int(6*zoom))+" bold")
+				else:
+					Canevas.create_rectangle(x, y, x+zoom*20, y+zoom*20, fill=mywalls)
+	set_objectif(g,nblignes, nbcolonnes, 1000, _display)
 	#print("GGG",g)
 
-def set_objectif(g, nblignes,nbcolonnes, value_objectif):
+def set_objectif(g, nblignes,nbcolonnes, _value_objectif, _display):
+	global value_objectif
+	value_objectif = _value_objectif
 	i = nblignes-1
 	j = nbcolonnes-1
-	y =zoom*20*i+20
-	x =zoom*20*j+20
-	g[i, j, 0] = -1000
+	g[i, j, 0] = 5
 	g[i, j, 1] = value_objectif
-	Canevas.create_rectangle(x, y, x+zoom*20, y+zoom*20,  fill=myred)
+	if _display:
+		y =zoom*20*i+20
+		x =zoom*20*j+20
+		Canevas.create_rectangle(x, y, x+zoom*20, y+zoom*20,  fill=myred)
 
 
 
@@ -341,86 +347,143 @@ def set_parameters(nbligness , nbcolonness, probas, weights):
 	weight[5] = weights[5]
 
 
-def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _PosY=20):
-	global g, cost, Pion, zoom, PosX, PosY, Canevas, policy, Largeur, Hauteur
+def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _PosY=20, _gamma=0.9, _display=True, _q=1):
+	global g, cost, Pion, zoom, PosX, PosY, Canevas, policy, Largeur, Hauteur, times_list, iterations_list
 	global color, myred, mygreen, myblue, mygrey, myyellow, myblack, mywalls, mywhite, w, wg, wb, wr, wn, ws
 
 	set_parameters(_nblignes , _nbcolonness, _proba, _weight)
+	gamma = _gamma
 	zoom = _zoom
 	PosX = _PosX
 	PosY = _PosY
 
-	Mafenetre = Tk()
-	Mafenetre.title('MADI PROJET')
+	if _display:
+		Mafenetre = Tk()
+		Mafenetre.title('MADI PROJET')
+		# position initiale du pion
+		PosX = 20+10*zoom
+		PosY = 20+10*zoom
 
-	# position initiale du pion
-	PosX = 20+10*zoom
-	PosY = 20+10*zoom
+		# Creation d'un widget Canvas (zone graphique)
+		Largeur = zoom*20*nbcolonnes+40
+		Hauteur = zoom*20*nblignes+40
+		 
+		# valeurs de la grille
+		g = np.zeros((nblignes,nbcolonnes,2), dtype=np.int)
+		cost= np.zeros(6, dtype=np.int)
 
-	# Creation d'un widget Canvas (zone graphique)
-	Largeur = zoom*20*nbcolonnes+40
-	Hauteur = zoom*20*nblignes+40
-	 
-	# valeurs de la grille
-	g = np.zeros((nblignes,nbcolonnes,2), dtype=np.int)
-	cost= np.zeros(6, dtype=np.int)
+		
 
-	
+		myred="#F70B42"
+		mygreen="#1AD22C"
+		myblue="#0B79F7"
+		mygrey="#E8E8EB"
+		myyellow="#F9FB70"
+		myblack="#5E5E64"
+		mywalls="#5E5E64"
+		mywhite="#FFFFFF"
 
-	myred="#F70B42"
-	mygreen="#1AD22C"
-	myblue="#0B79F7"
-	mygrey="#E8E8EB"
-	myyellow="#F9FB70"
-	myblack="#5E5E64"
-	mywalls="#5E5E64"
-	mywhite="#FFFFFF"
+		color=[mywhite,mygreen,myblue,myred,myblack]
 
-	color=[mywhite,mygreen,myblue,myred,myblack]
-
-	Canevas = Canvas(Mafenetre, width = Largeur, height =Hauteur, bg =mywhite)
-	for i in range(nblignes+2):
-		ni=zoom*20*i+20
-		Canevas.create_line(20, ni, Largeur-20,ni)
-	for j in range(nbcolonnes+2):
-		nj=zoom*20*j+20
-		Canevas.create_line(nj, 20, nj, Hauteur-20)
-	colordraw(g,nblignes,nbcolonnes)
-	Pion = Canevas.create_oval(PosX -9*zoom, PosY -9*zoom, PosX +9*zoom, PosY +9*zoom,width=2,outline='black',fill=myyellow)
-	Canevas.focus_set()
-	Canevas.bind('<Key>',Clavier)
-	Canevas.pack(padx =5, pady =5)
-
-
-	policy = itervalue(g, nblignes, nbcolonnes, proba, gamma=0.9 , e= 0.001)
-
-	# Craation d'un widget Button (bouton Quitter)
-	# Creation d'un widget Button (bouton Quitter)
-	Button(Mafenetre, text ='Restart', command = initialize).pack(side=LEFT,padx=5,pady=5)
-	Button(Mafenetre, text ='Quit', command = Mafenetre.destroy).pack(side=LEFT,padx=5,pady=5)
-	Button(Mafenetre, text ='Policy', command = display_policy).pack(side=LEFT,padx=5,pady=5)
-
-	w = Label(Mafenetre, text='     Costs: ', fg=myblack,font = "Verdana "+str(int(5*zoom))+" bold")
-	w.pack(side=LEFT,padx=5,pady=5) 
-	wg = Label(Mafenetre, text=str(cost[1]),fg=mygreen,font = "Verdana "+str(int(5*zoom))+" bold")
-	wg.pack(side=LEFT,padx=5,pady=5) 
-	wb = Label(Mafenetre, text=str(cost[2]),fg=myblue,font = "Verdana "+str(int(5*zoom))+" bold")
-	wb.pack(side=LEFT,padx=5,pady=5) 
-	wr = Label(Mafenetre, text=str(cost[3]),fg=myred,font = "Verdana "+str(int(5*zoom))+" bold")
-	wr.pack(side=LEFT,padx=5,pady=5) 
-	wn = Label(Mafenetre, text=str(cost[4]),fg=myblack,font = "Verdana "+str(int(5*zoom))+" bold")
-	wn.pack(side=LEFT,padx=5,pady=5) 
-	ws = Label(Mafenetre, text='     total = '+str(cost[0]),fg=myblack,font = "Verdana "+str(int(5*zoom))+" bold")
-	ws.pack(side=LEFT,padx=5,pady=5) 
-	Mafenetre.mainloop()
+		Canevas = Canvas(Mafenetre, width = Largeur, height =Hauteur, bg =mywhite)
+		for i in range(nblignes+2):
+			ni=zoom*20*i+20
+			Canevas.create_line(20, ni, Largeur-20,ni)
+		for j in range(nbcolonnes+2):
+			nj=zoom*20*j+20
+			Canevas.create_line(nj, 20, nj, Hauteur-20)
+		colordraw(g,nblignes,nbcolonnes)
+		Pion = Canevas.create_oval(PosX -9*zoom, PosY -9*zoom, PosX +9*zoom, PosY +9*zoom,width=2,outline='black',fill=myyellow)
+		Canevas.focus_set()
+		Canevas.bind('<Key>',Clavier)
+		Canevas.pack(padx =5, pady =5)
 
 
+		policy, iteration = itervalue(g, nblignes, nbcolonnes, proba, gamma , e=0.0001, objectif=value_objectif, _q=_q)
+
+		# Craation d'un widget Button (bouton Quitter)
+		# Creation d'un widget Button (bouton Quitter)
+		Button(Mafenetre, text ='Restart', command = initialize).pack(side=LEFT,padx=5,pady=5)
+		Button(Mafenetre, text ='Quit', command = Mafenetre.destroy).pack(side=LEFT,padx=5,pady=5)
+		Button(Mafenetre, text ='Policy', command = display_policy).pack(side=LEFT,padx=5,pady=5)
+
+		w = Label(Mafenetre, text='     Costs: ', fg=myblack,font = "Verdana "+str(int(5*zoom))+" bold")
+		w.pack(side=LEFT,padx=5,pady=5) 
+		wg = Label(Mafenetre, text=str(cost[1]),fg=mygreen,font = "Verdana "+str(int(5*zoom))+" bold")
+		wg.pack(side=LEFT,padx=5,pady=5) 
+		wb = Label(Mafenetre, text=str(cost[2]),fg=myblue,font = "Verdana "+str(int(5*zoom))+" bold")
+		wb.pack(side=LEFT,padx=5,pady=5) 
+		wr = Label(Mafenetre, text=str(cost[3]),fg=myred,font = "Verdana "+str(int(5*zoom))+" bold")
+		wr.pack(side=LEFT,padx=5,pady=5) 
+		wn = Label(Mafenetre, text=str(cost[4]),fg=myblack,font = "Verdana "+str(int(5*zoom))+" bold")
+		wn.pack(side=LEFT,padx=5,pady=5) 
+		ws = Label(Mafenetre, text='     total = '+str(cost[0]),fg=myblack,font = "Verdana "+str(int(5*zoom))+" bold")
+		ws.pack(side=LEFT,padx=5,pady=5) 
+		Mafenetre.mainloop()
+
+	else:
+		# valeurs de la grille
+		g = np.zeros((nblignes,nbcolonnes,2), dtype=np.int)
+		cost= np.zeros(6, dtype=np.int)
+		colordraw(g,nblignes,nbcolonnes,_display)
+		t0 = time.time()
+		policy, iteration = itervalue(g, nblignes, nbcolonnes, proba, gamma , e=0.0001, objectif=value_objectif)
+		t1 = time.time()
+		times_list.append(t1-t0)
+		iterations_list.append(iteration)
+
+def comparer_make_images():
+	global times_list, iterations_list
+	_weight = [0,1,2,3,4,-1]
+
+	times_list=[]
+	iterations_list=[]
+	times_mean=[]
+	iterations_mean=[]
+	for p in [1,0.6]:
+		for nbl,nbc in [[10,10],[10,15],[15,20]]:
+			y_time = []
+			y_iter = []
+			for g in [0.9,0.7,0.5]:
+				times_list=[]
+				iterations_list=[]
+				for i in range(15):
+					init_game(nbl , nbc, _proba=p, _weight=_weight, _gamma=g, _display=False)
+				times_mean.append(np.mean(np.array(times_list)))
+				iterations_mean.append(np.mean(np.array(iterations_list)))
+				y_time.append(np.mean(np.array(times_list)))
+				y_iter.append(np.mean(np.array(iterations_list)))
+			x = [0.9,0.7,0.5]
+			ln1, = plt.plot(x, y_time, color='red')
+			plt.legend(handles=[ln1],labels=['time mean'])
+			plt.title("Moyenne de temps")
+			plt.savefig('./Results/'+str(p)+"_"+str(nbl)+"mult"+str(nbc)+"_time.jpg")
+			plt.xlabel("Different gamma")
+			plt.ylabel("Time mean")
+			plt.show()
+			ln2, = plt.plot(x, y_iter, color='blue')
+			plt.legend(handles=[ln2],labels=['iteration mean'])
+			plt.title("Moyenne d'itérations")
+			plt.savefig('./Results/'+str(p)+"_"+str(nbl)+"mult"+str(nbc)+"_iter.jpg")
+			plt.xlabel("Different gamma")
+			plt.ylabel("Iteration mean")
+			plt.show()
 
 if __name__ == "__main__":
+
+	#question 2b
+	#comparer_make_images()
+
+	#question 2c
 	_nblignes = 10
 	_nbcolonness = 15
 	_proba = 0.8
 	_weight = [0,1,2,3,4,-1]
-	init_game(_nblignes , _nbcolonness, _proba, _weight)
+	_gamma = 0.9
+	_display = True
+	_q = 1.5
+
+	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q)
 
 	
+
