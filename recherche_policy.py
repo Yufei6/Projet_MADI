@@ -1,7 +1,8 @@
 import numpy as np
 import math
 
-def transfer_puissance(grill,_q):
+def transfer_puissance(_grill,_q):
+    grill = np.copy(_grill)
     for i in range(len(grill)):
         for j in range(len(grill[0])):
             if grill[i,j,0]!=5 and grill[i,j,0]>0:
@@ -127,10 +128,10 @@ def check_grill(i,j,grill):
         
 def itervalue(grill, n,m,p,gamma,e, objectif,_q=1, _color=False):
     #print("grill",grill)
-    grill = transfer_puissance(grill,_q)
-    grill = change_grill(grill, n, m, objectif)
+    new_grill = transfer_puissance(grill,_q)
+    new_grill = change_grill(new_grill, n, m, objectif)
     if _color:
-        grill = transfer_color(grill,objectif)
+        new_grill = transfer_color(new_grill,objectif)
     tabaction=np.zeros((n,m))
     tab=np.zeros((n,m))
     tab_ancien= np.zeros((n,m))
@@ -141,10 +142,10 @@ def itervalue(grill, n,m,p,gamma,e, objectif,_q=1, _color=False):
         for i in range(n):
             for j in range(m):
                 if not (i==n-1 and j ==m-1):
-                    if check_grill(i,j,grill):
+                    if check_grill(i,j,new_grill):
                         temp=np.zeros(4)
                         for a in range(4):
-                            temp[a]=calculV(grill,n,m,i,j,a,p,tab_ancien,gamma)
+                            temp[a]=calculV(new_grill,n,m,i,j,a,p,tab_ancien,gamma)
                         tab[i][j]=max(temp)
                         tabaction[i][j]=np.argmax(temp)
         #print("tab",tab)

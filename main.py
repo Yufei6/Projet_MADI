@@ -253,14 +253,14 @@ def Clavier(event):
 	# deplacement vers la gauche
 	if touche == 'Left' and check_left(cj,li):
 		move_proba_left(cj, li)
-	if touche == 'Space':
-		if policy[cj,li]==0:
+	if touche == 'space':
+		if policy[li][cj]==0:
 			move_proba_up(cj, li)
-		elif policy[cj,li]==1:
+		elif policy[li][cj]==1:
 			move_proba_down(cj, li)
-		elif policy[cj,li]==2:
+		elif policy[li][cj]==2:
 			move_proba_left(cj, li)
-		elif policy[cj,li]==3:
+		elif policy[li][cj]==3:
 			move_proba_right(cj, li)
 	# on dessine le pion a sa nouvelle position
 	Canevas.coords(Pion,PosX -9*zoom, PosY -9*zoom, PosX +9*zoom, PosY +9*zoom)
