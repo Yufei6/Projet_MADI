@@ -2,7 +2,7 @@ import gurobipy as gb
 from gurobipy import *
 
 def calculTransfert(grill,i,j,a,p):
-	
+    
     c=i
     d=j
     i-=1
@@ -39,7 +39,7 @@ def calculTransfert(grill,i,j,a,p):
             up,down,left,right,reset=0,0,1,0,0
         elif grill[c+1][d][0]==0 and grill[c-1][d][0]!=0:
             
-        	up,down,left,right,reset=p2,0,p1,0,0
+            up,down,left,right,reset=p2,0,p1,0,0
         elif grill[c+1][d][0]!=0 and grill[c-1][d][0]==0:
             
             up,down,left,right,reset=0,p2,p1,0,0
@@ -53,7 +53,7 @@ def calculTransfert(grill,i,j,a,p):
             up,down,left,right,reset=0,0,0,0,1
         elif grill[c+1][d][0]==0 and grill[c-1][d][0]==0:
             
-        	up,down,left,right,reset=0,0,0,1,0
+            up,down,left,right,reset=0,0,0,1,0
         elif grill[c+1][d][0]==0 and grill[c-1][d][0]!=0:
             
             up,down,left,right,reset=p2,0,0,p1,0
@@ -142,31 +142,32 @@ def optimale(n,m,nba,grill,p,gamma):
     colonnes = range(nbvar)
 
     # Matrice des contraintes
-  	G=[]
+    G=[]
     for i in range(n):
-    	for j in range(m):
-    		tab==np.zeros(n*m*j)
-    		for a in range(nba):
-    			tab[i*m*nba+j*nba+a]+=1
-    			up,down,left,right,reset=calculTransfert(grill,i,j,a,p)
-    			tab[i*m*nba+j*nba+a]+=reset*gamma
-    			tab[(i-1)*m*nba+j*nba+a]+=up*gamma
-    			tab[(i+1)*m*nba+j*nba+a]+=down*gamma
-    			tab[i*m*nba+(j-1)*nba+a]+=left*gamma
-    			tab[i*m*nba+(j-1)*nba+a]+=right*gamma
-    
+        for j in range(m):
+            tab==np.zeros(n*m*j)
+            for a in range(nba):
+                tab[i*m*nba+j*nba+a]+=1
+                up,down,left,right,reset=calculTransfert(grill,i,j,a,p)
+                tab[i*m*nba+j*nba+a]+=reset*gamma
+                tab[(i-1)*m*nba+j*nba+a]+=up*gamma
+                tab[(i+1)*m*nba+j*nba+a]+=down*gamma
+                tab[i*m*nba+(j-1)*nba+a]+=left*gamma
+                tab[i*m*nba+(j-1)*nba+a]+=right*gamma
+                tab[i*m*nba+(j-1)*nba+a]+=right*gamma
+            G.append(tab)
+    G=np.array(G)
     # Second membre
     b = []
-    
     for i in range(n*m) :
         b.append(1)
     # Coefficients de la fonction objectif
     c = []
     for i in range(n) :
-    	for j in range(m):
-    		for a in range(nba):
-    			r=calculR(grill, i,j,a,p)
-    			c.append(r)
+        for j in range(m):
+            for a in range(nba):
+                r=calculR(grill, i,j,a,p)
+                c.append(r)
 
          
     m = Model("mogplex")     
@@ -216,19 +217,19 @@ def optimale(n,m,nba,grill,p,gamma):
     colonnes = range(nbvar)
 
     # Matrice des contraintes
-  	G=[]
+    G=[]
     for i in range(n):
-    	for j in range(m):
-    		tab==np.zeros(n*m*j)
-    		for a in range(nba):
-    			tab[i*m*nba+j*nba+a]+=1
-    			up,down,left,right,reset=calculTransfert(grill,i,j,a,p)
-    			tab[i*m*nba+j*nba+a]+=reset*gamma
-    			tab[(i-1)*m*nba+j*nba+a]+=up*gamma
-    			tab[(i+1)*m*nba+j*nba+a]+=down*gamma
-    			tab[i*m*nba+(j-1)*nba+a]+=left*gamma
-    			tab[i*m*nba+(j-1)*nba+a]+=right*gamma
-    		G.append(tab)
+        for j in range(m):
+            tab==np.zeros(n*m*j)
+            for a in range(nba):
+                tab[i*m*nba+j*nba+a]+=1
+                up,down,left,right,reset=calculTransfert(grill,i,j,a,p)
+                tab[i*m*nba+j*nba+a]+=reset*gamma
+                tab[(i-1)*m*nba+j*nba+a]+=up*gamma
+                tab[(i+1)*m*nba+j*nba+a]+=down*gamma
+                tab[i*m*nba+(j-1)*nba+a]+=left*gamma
+                tab[i*m*nba+(j-1)*nba+a]+=right*gamma
+            G.append(tab)
     G=np.array(G)
     # Second membre
     b = []
@@ -238,10 +239,10 @@ def optimale(n,m,nba,grill,p,gamma):
     # Coefficients de la fonction objectif
     c = []
     for i in range(n) :
-    	for j in range(m):
-    		for a in range(nba):
-    			r=calculR(grill, i,j,a,p)
-    			c.append(r)
+        for j in range(m):
+            for a in range(nba):
+                r=calculR(grill, i,j,a,p)
+                c.append(r)
 
          
     m = Model("mogplex")     
@@ -292,19 +293,19 @@ def optimalepure(n,m,nba,grill,p,gamma):
     colonnes = range(nbvar)
 
     # Matrice des contraintes
-  	G=[]
+    G=[]
     for i in range(n):
-    	for j in range(m):
-    		tab==np.zeros(n*m*j)
-    		for a in range(nba):
-    			tab[i*m*nba+j*nba+a]+=1
-    			up,down,left,right,reset=calculTransfert(grill,i,j,a,p)
-    			tab[i*m*nba+j*nba+a]+=reset*gamma
-    			tab[(i-1)*m*nba+j*nba+a]+=up*gamma
-    			tab[(i+1)*m*nba+j*nba+a]+=down*gamma
-    			tab[i*m*nba+(j-1)*nba+a]+=left*gamma
-    			tab[i*m*nba+(j-1)*nba+a]+=right*gamma
-        	G.append(tab)
+        for j in range(m):
+            tab==np.zeros(n*m*j)
+            for a in range(nba):
+                tab[i*m*nba+j*nba+a]+=1
+                up,down,left,right,reset=calculTransfert(grill,i,j,a,p)
+                tab[i*m*nba+j*nba+a]+=reset*gamma
+                tab[(i-1)*m*nba+j*nba+a]+=up*gamma
+                tab[(i+1)*m*nba+j*nba+a]+=down*gamma
+                tab[i*m*nba+(j-1)*nba+a]+=left*gamma
+                tab[i*m*nba+(j-1)*nba+a]+=right*gamma
+            G.append(tab)
     G=np.array(G)
     # Second membre
     b = []
@@ -314,10 +315,10 @@ def optimalepure(n,m,nba,grill,p,gamma):
     # Coefficients de la fonction objectif
     c = []
     for i in range(n) :
-    	for j in range(m):
-    		for a in range(nba):
-    			r=calculR(grill, i,j,a,p)
-    			c.append(r)
+        for j in range(m):
+            for a in range(nba):
+                r=calculR(grill, i,j,a,p)
+                c.append(r)
 
          
     m = Model("mogplex")     
@@ -326,6 +327,11 @@ def optimalepure(n,m,nba,grill,p,gamma):
     x = []
     for i in colonnes:
         x.append(m.addVar(vtype=GRB.CONTINUOUS, lb=0, name="x%d" % (i+1)))
+    d=[]
+    tab=[]
+    for i in range(n):
+        for j in range(m):  
+            d.append(m.addVar(vtype=GRB.BINARY, lb=0,ub=1))
 
     # maj du modele pour integrer les nouvelles variables
     m.update()
@@ -341,7 +347,11 @@ def optimalepure(n,m,nba,grill,p,gamma):
     # Definition des contraintes
     for i in lignes:
         m.addConstr(quicksum(G[i][j]*x[j] for j in colonnes) == b[i], "Contrainte%d" % i)
-    
+    for i in range(n):
+        for j in range(m):
+            m.addConstr(quicksum(d[i*m+j*nba+a] for a in range(nba)) <= 1, "Contrainte%d" % i*m+j+nbcont)
+    for i in colonnes:
+        m.addConstr((1-gamma)*x[i]<= d[i], "Contrainte%d" % i+n*m+nbcont)
 
     # Resolution
     m.optimize()
