@@ -1,16 +1,28 @@
 import numpy as np
 import math
 
+def transfer_puissance(grill,_q):
+    for i in range(len(grill)):
+        for j in range(len(grill[0])):
+            if grill[i,j,0]!=5 and grill[i,j,0]>0:
+                grill[i,j,0] = grill[i,j,0] ** _q
+    return grill
+
+def transfer_objectif(grill, objectif):
+    for i in range(len(grill)):
+        for j in range(len(grill[0])):
+            if grill[i,j,0]==5:
+                grill[i,j,0] = -1 * objectif
+    return grill
+
 def calculV(grill, n,m,i,j,a,p,tab,gamma):
-    c=i
-    d=j
-    i-=1
-    j-=1
+    c=i+1
+    d=j+1
     p1=(1+p)/2
     p2=(1-p)/2
     if a==0:#up
         if(grill[c-1][d][0]==0):
-            a=tab[i][j]
+            a=tab[i][j]-grill[c][d][0]
         elif grill[c][d-1][0]==0 and grill[c][d+1][0]==0:
             a= -grill[c-1][d][0]+gamma*tab[i-1][j]
         elif grill[c][d-1][0]==0 and grill[c][d+1][0]!=0:
@@ -22,7 +34,7 @@ def calculV(grill, n,m,i,j,a,p,tab,gamma):
             +gamma*(tab[i-1][j]*p+tab[i][j-1]*p2+tab[i][j+1]*p2)
     if a==1:#down
         if(grill[c+1][d][0]==0):
-            a=tab[i][j]
+            a=tab[i][j]-grill[c][d][0]
         elif grill[c][d-1][0]==0 and grill[c][d+1][0]==0:
             a= -grill[c+1][d][0]\
             +gamma*tab[i+1][j]
@@ -38,7 +50,7 @@ def calculV(grill, n,m,i,j,a,p,tab,gamma):
     if a==2:#left
         if(grill[c][d-1][0]==0):
             
-            a=tab[i][j]
+            a=tab[i][j]-grill[c][d][0]
         elif grill[c+1][d][0]==0 and grill[c-1][d][0]==0:
             
             a= -grill[c][d-1][0]\
@@ -59,7 +71,7 @@ def calculV(grill, n,m,i,j,a,p,tab,gamma):
     if a==3:#right
         if(grill[c][d+1][0]==0):
             
-            a=tab[i][j]
+            a=tab[i][j]-grill[c][d][0]
         elif grill[c+1][d][0]==0 and grill[c-1][d][0]==0:
             
             a= -grill[c][d+1][0]\
@@ -78,7 +90,8 @@ def calculV(grill, n,m,i,j,a,p,tab,gamma):
             +gamma*(tab[i][j+1]*p+tab[i+1][j]*p2+tab[i-1][j]*p2)
     return a
 
-def change_grill(grill,n,m):
+def change_grill(grill,n,m, objectif):
+    grill = transfer_objectif(grill, objectif)
     new_grill = np.zeros((n+2, m+2, 2))
     for i in range(n+2):
         for j in range(m+2):
@@ -89,24 +102,35 @@ def change_grill(grill,n,m):
                 new_grill[i,j,0] = grill[i-1,j-1,0]
                 new_grill[i,j,1] = grill[i-1,j-1,1]
     return new_grill
+
+#Baowei return False
+def check_grill(i,j,grill):
+    c=i+1
+    d=j+1
+    if (grill[c-1][d][0]==0) and (grill[c+1][d][0]==0) and (grill[c][d-1][0]==0) and (grill[c][d+1][0]==0):
+        return False
+    return True
         
-def itervalue(grill, n,m,p,gamma,e):
+def itervalue(grill, n,m,p,gamma,e, objectif,_q=1):
     #print("grill",grill)
-    grill = change_grill(grill, n, m)
+    grill = transfer_puissance(grill,_q)
+    grill = change_grill(grill, n, m, objectif)
     tabaction=np.zeros((n,m))
     tab=np.zeros((n,m))
     tab_ancien= np.zeros((n,m))
     iteration = 0
     while True:
+        iteration +=1
         tab_ancien= np.copy(tab)
         for i in range(n):
             for j in range(m):
                 if not (i==n-1 and j ==m-1):
-                    temp=np.zeros(4)
-                    for a in range(4):
-                        temp[a]=calculV(grill,n,m,i+1,j+1,a,p,tab_ancien,gamma)
-                    tab[i][j]=max(temp)
-                    tabaction[i][j]=np.argmax(temp)
+                    if check_grill(i,j,grill):
+                        temp=np.zeros(4)
+                        for a in range(4):
+                            temp[a]=calculV(grill,n,m,i,j,a,p,tab_ancien,gamma)
+                        tab[i][j]=max(temp)
+                        tabaction[i][j]=np.argmax(temp)
         #print("tab",tab)
         diffmax=0
         for i in range(n):
@@ -114,8 +138,8 @@ def itervalue(grill, n,m,p,gamma,e):
                 diff=abs(tab[i][j]-tab_ancien[i][j])
                 if diff > diffmax:
                     diffmax = diff
-        print("diffmax", diffmax, " iteration",iteration)
+        #print("diffmax", diffmax, " iteration",iteration)
         if diffmax <= e:
-            print("tabaction",tabaction)
-            return tabaction
-        iteration +=1
+            p#rint("tabaction",tabaction)
+            return tabaction, iteration
+        
