@@ -315,14 +315,35 @@ def colordraw(g,nblignes,nbcolonnes):
 				Canevas.create_rectangle(x, y, x+zoom*20, y+zoom*20, fill=mywalls)
 	print("GGG",g)
 
+def set_parameters(nbligness , nbcolonness, probas, weights):
+	global nblignes , nbcolonnes, proba, weight
+	nblignes = nbligness
+	nbcolonnes = nbcolonness
+	proba = probas
+	weight = np.zeros(5, dtype=np.int)
+	weight[1] = weights[1]
+	weight[2] = weights[2]
+	weight[3] = weights[3]
+	weight[4] = weights[4]
+
+
 
 
 
 if __name__ == "__main__":
 	#taille de la grille
+	"""
 	nblignes=10
 	nbcolonnes=15
 	proba = 0.8
+	weight= np.zeros(5, dtype=np.int)
+	weight[1] = 1
+	weight[2] = 1
+	weight[3] = 1
+	weight[4] = 1
+	"""
+
+	set_parameters(10, 15, 0.8, [0,1,2,3,4])
 	zoom=2
 
 
@@ -340,11 +361,7 @@ if __name__ == "__main__":
 	# valeurs de la grille
 	g = np.zeros((nblignes,nbcolonnes,2), dtype=np.int)
 	cost= np.zeros(5, dtype=np.int)
-	weight= np.zeros(5, dtype=np.int)
-	weight[1] = 1
-	weight[2] = 1
-	weight[3] = 1
-	weight[4] = 1
+	
 
 	myred="#F70B42"
 	mygreen="#1AD22C"
