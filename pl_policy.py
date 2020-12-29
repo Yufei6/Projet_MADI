@@ -203,3 +203,155 @@ def optimale(n,m,nba,grill,p,gamma):
     # print("dico :",dico_opt)
     
     return x
+def optimale(n,m,nba,grill,p,gamma):
+    
+    # G : matrice des gains
+   
+
+    nbcont = n*m
+    nbvar = n*m*nba
+
+    # Range of plants and warehouses
+    lignes = range(nbcont)
+    colonnes = range(nbvar)
+
+    # Matrice des contraintes
+  	G=[]
+    for i in range(n):
+    	for j in range(m):
+    		tab==np.zeros(n*m*j)
+    		for a in range(nba):
+    			tab[i*m*nba+j*nba+a]+=1
+    			up,down,left,right,reset=calculTransfert(grill,i,j,a,p)
+    			tab[i*m*nba+j*nba+a]+=reset*gamma
+    			tab[(i-1)*m*nba+j*nba+a]+=up*gamma
+    			tab[(i+1)*m*nba+j*nba+a]+=down*gamma
+    			tab[i*m*nba+(j-1)*nba+a]+=left*gamma
+    			tab[i*m*nba+(j-1)*nba+a]+=right*gamma
+    		G.append(tab)
+    G=np.array(G)
+    # Second membre
+    b = []
+    
+    for i in range(n*m) :
+        b.append(1)
+    # Coefficients de la fonction objectif
+    c = []
+    for i in range(n) :
+    	for j in range(m):
+    		for a in range(nba):
+    			r=calculR(grill, i,j,a,p)
+    			c.append(r)
+
+         
+    m = Model("mogplex")     
+
+    # declaration variables de decision
+    x = []
+    for i in colonnes:
+        x.append(m.addVar(vtype=GRB.CONTINUOUS, lb=0, name="x%d" % (i+1)))
+
+    # maj du modele pour integrer les nouvelles variables
+    m.update()
+
+    obj = LinExpr();
+    obj =0
+    for j in colonnes:
+        obj += c[j] * x[j]
+
+    # definition de l'objectif
+    m.setObjective(obj,GRB.MINIMIZE)
+
+    # Definition des contraintes
+    for i in lignes:
+        m.addConstr(quicksum(G[i][j]*x[j] for j in colonnes) == b[i], "Contrainte%d" % i)
+
+    # Resolution
+    m.optimize()
+
+
+    # print("")                
+    # print('Solution optimale:')
+    
+    # print("")
+    # print('Valeur de la fonction objectif :', m.objVal)
+    # print("dico :",dico_opt)
+    
+    return x
+
+def optimalepure(n,m,nba,grill,p,gamma):
+    
+    # G : matrice des gains
+   
+
+    nbcont = n*m
+    nbvar = n*m*nba
+
+    # Range of plants and warehouses
+    lignes = range(nbcont)
+    colonnes = range(nbvar)
+
+    # Matrice des contraintes
+  	G=[]
+    for i in range(n):
+    	for j in range(m):
+    		tab==np.zeros(n*m*j)
+    		for a in range(nba):
+    			tab[i*m*nba+j*nba+a]+=1
+    			up,down,left,right,reset=calculTransfert(grill,i,j,a,p)
+    			tab[i*m*nba+j*nba+a]+=reset*gamma
+    			tab[(i-1)*m*nba+j*nba+a]+=up*gamma
+    			tab[(i+1)*m*nba+j*nba+a]+=down*gamma
+    			tab[i*m*nba+(j-1)*nba+a]+=left*gamma
+    			tab[i*m*nba+(j-1)*nba+a]+=right*gamma
+        	G.append(tab)
+    G=np.array(G)
+    # Second membre
+    b = []
+    
+    for i in range(n*m) :
+        b.append(1)
+    # Coefficients de la fonction objectif
+    c = []
+    for i in range(n) :
+    	for j in range(m):
+    		for a in range(nba):
+    			r=calculR(grill, i,j,a,p)
+    			c.append(r)
+
+         
+    m = Model("mogplex")     
+
+    # declaration variables de decision
+    x = []
+    for i in colonnes:
+        x.append(m.addVar(vtype=GRB.CONTINUOUS, lb=0, name="x%d" % (i+1)))
+
+    # maj du modele pour integrer les nouvelles variables
+    m.update()
+
+    obj = LinExpr();
+    obj =0
+    for j in colonnes:
+        obj += c[j] * x[j]
+
+    # definition de l'objectif
+    m.setObjective(obj,GRB.MINIMIZE)
+
+    # Definition des contraintes
+    for i in lignes:
+        m.addConstr(quicksum(G[i][j]*x[j] for j in colonnes) == b[i], "Contrainte%d" % i)
+    
+
+    # Resolution
+    m.optimize()
+
+
+    # print("")                
+    # print('Solution optimale:')
+    
+    # print("")
+    # print('Valeur de la fonction objectif :', m.objVal)
+    # print("dico :",dico_opt)
+    
+    return x
