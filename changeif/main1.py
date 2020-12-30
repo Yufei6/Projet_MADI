@@ -4,6 +4,7 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 from pl_policy import *
+from minmax import *
 
 def check_up(cj,li):
 	if li>0:
@@ -358,7 +359,7 @@ def set_objectif(g, nblignes,nbcolonnes, _value_objectif, _display):
 	i = nblignes-1
 	j = nbcolonnes-1
 	g[i, j, 0] = 5
-	g[i, j, 1] = value_objectif
+	g[i, j, 1] = 0
 	if _display:
 		y =zoom*20*i+20
 		x =zoom*20*j+20
@@ -432,8 +433,8 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 
 
 		policy, iteration = itervalue(g, nblignes, nbcolonnes, proba, gamma , e=0.0001, objectif=value_objectif, _q=_q, _color=_color)
-		g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
-		policy=optimalepure(nblignes, nbcolonnes,4 , g1,proba, gamma)
+		#g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
+		policy=multioptimale(nblignes, nbcolonnes,4 , g,proba, gamma,value_objectif,4)
 		#print("aaa",policy)
 		# Craation d'un widget Button (bouton Quitter)
 		# Creation d'un widget Button (bouton Quitter)
@@ -509,8 +510,8 @@ if __name__ == "__main__":
 	#comparer_make_images()
 
 	#question 2c
-	_nblignes = 8
-	_nbcolonness = 8
+	_nblignes = 10
+	_nbcolonness = 10
 	_proba = 1
 	_weight = [0,1,2,3,4,-1]
 	_gamma = 0.9

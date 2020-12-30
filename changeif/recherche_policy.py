@@ -116,7 +116,8 @@ def calculV(grill, n,m,i,j,a,p,tab,gamma):
             
     return b
 
-def change_grill(grill,n,m, objectif):
+def change_grill(_grill,n,m, objectif):
+    grill = np.copy(_grill)
     grill = transfer_objectif(grill, objectif)
     new_grill = np.zeros((n+2, m+2, 2))
     for i in range(n+2):
