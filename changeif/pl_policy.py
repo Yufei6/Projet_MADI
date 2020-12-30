@@ -201,12 +201,7 @@ def optimale(n,m,nba,grill,p,gamma):
                 G.append(tab)
     G=np.array(G)
     # Second membre
-    b = []
-    
-    for i in range(n) :
-        for j in range(m):
-            if(grill[i+1][j+1][0]!=0):
-                b.append(1)
+   
     # Coefficients de la fonction objectif
     c = []
     for i in range(n) :
@@ -295,22 +290,26 @@ def optimalepure(n,m,nba,grill,p,gamma):
     
     # G : matrice des gains
    
-
     nbcont = n*m
     nbvar = n*m*nba
+    count=0
+    for i in range(n) :
+        for j in range(m):
+            if(grill[i+1][j+1][0]!=0 and  (i!=n-1 or j!=m-1)):
+                count+=1
 
     # Range of plants and warehouses
-    lignes = range(nbcont)
+    lignes = range(count)
     colonnes = range(nbvar)
 
     # Matrice des contraintes
     G=[]
     for i in range(n):
         for j in range(m):
-            tab=np.zeros(n*m*nba)
-            for a in range(nba):
-                tab[i*m*nba+j*nba+a]+=1
-                if(grill[i+1][j+1][0]!=0):
+            if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
+                tab=np.zeros(n*m*nba)
+                for a in range(nba):
+                    tab[i*m*nba+j*nba+a]+=1
                     up,down,left,right,reset,upleft,upright,downleft,downright=calculTransfert(grill,i,j,a,p)
                     tab[i*m*nba+j*nba+a]-=reset*gamma
                     if(i>0):
@@ -329,60 +328,79 @@ def optimalepure(n,m,nba,grill,p,gamma):
                         tab[(i+1)*m*nba+(j-1)*nba+a]-=downleft*gamma
                     if(i<n-1 and j<m-1):
                         tab[(i+1)*m*nba+(j+1)*nba+a]-=downright*gamma
-            G.append(tab)
+                G.append(tab)
     G=np.array(G)
     # Second membre
-    b = []
-    
-    for i in range(n) :
-        for j in range(m):
-            if(grill[i+1][j+1][0]==0):
-                b.append(0)
-            else:
-                b.append(1)
+   
     # Coefficients de la fonction objectif
     c = []
     for i in range(n) :
         for j in range(m):
-            for a in range(nba):
-                print(a)
-                r=calculR(grill, i,j,a,p)
-                c.append(r)
-
+            if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
+                for a in range(nba):
+                    r=calculR(grill, i,j,a,p)
+                    c.append(r)
          
     m1 = Model("mogplex")     
 
     # declaration variables de decision
     x = []
-    for i in colonnes:
-        x.append(m1.addVar(vtype=GRB.CONTINUOUS, lb=0, name="x%d" % (i+1)))
+    for i in range(n) :
+        for j in range(m):
+            if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
+                for a in range(nba):
+                    x.append(m1.addVar(vtype=GRB.CONTINUOUS, lb=0, name="x%d" % (i*m*nba+j*nba+a+1)))
     d=[]
     tab=[]
     for i in range(n):
-        for j in range(m): 
-            for a in range(nba): 
-                d.append(m1.addVar(vtype=GRB.BINARY, lb=0,ub=1))
+        for j in range(m):
+            if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)): 
+                for a in range(nba): 
+                    d.append(m1.addVar(vtype=GRB.BINARY, lb=0,ub=1))
 
     # maj du modele pour integrer les nouvelles variables
     m1.update()
 
     obj = LinExpr();
     obj =0
-    for j in colonnes:
-        obj += c[j] * x[j]
+    count=0
+    for i in range(n) :
+            for j in range(m):
+                if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
+                    for a in range(nba):
+                        obj += c[count] * x[count]
+                        count+=1
 
     # definition de l'objectif
     m1.setObjective(obj,GRB.MAXIMIZE)
 
     # Definition des contraintes
-    for i in lignes:
-        m1.addConstr(quicksum(G[i][j]*x[j] for j in colonnes) == b[i], "Contrainte%d" % i)
+    for nb in lignes:
+        obj1 = LinExpr();
+        obj1 =0
+        count=0
+        for i in range(n) :
+            for j in range(m):
+                if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
+                    for a in range(nba):
+                        if(G[nb][i*m*nba+j*nba+a]!=0):
+                            obj1+=G[nb][i*m*nba+j*nba+a]*x[count]
+                        count+=1
+               
+        m1.addConstr(obj1 == 1)
+    count=0
     for i in range(n):
         for j in range(m):
-            m1.addConstr(quicksum(d[i*m*nba+j*nba+a] for a in range(nba)) <= 1, "Contraintess%d" % (i*m+j+nbcont))
-    for i in colonnes:
-        m1.addConstr((1-gamma)*x[i]<= d[i], "Contraintesssss%d" % (i+n*m+nbcont))
-
+            if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
+                m1.addConstr(quicksum(d[count+a] for a in range(nba)) <= 1, "Contraintess%d" % (i*m+j+nbcont))
+                count+=1
+    for i in range(n):
+        for j in range(m):
+            if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
+                for a in range(nba):
+                    m1.addConstr((1-gamma)*x[count]<= d[count], "Contraintesssss%d" % (i+n*m+nbcont))
+    # for  i in colonnes:
+    #     m1.addConstr(x[i]<= 1/(1-gamma), "Contraintesssss%d" % (i+n*m+nbcont))
     # Resolution
     m1.optimize()
 
@@ -393,21 +411,27 @@ def optimalepure(n,m,nba,grill,p,gamma):
     # print("")
     # print('Valeur de la fonction objectif :', m.objVal)
     # print("dico :",dico_opt)
-    tab=np.zeros((n,m))
+    tab=np.zeros((n,m,nba))
+    tab2=np.zeros((n,m))
+    count=0
     for i in range(n):
         for j in range(m):
             tab1=[]
-            for a in range(nba):
-                
-                v=x[i*m*nba+j*nba+a].X
-                tab1.append(v)
-            amax=np.argmax(tab1)
-            v=tab1[amax]
-            if (v>0):
-                for el in tab1:
-                    if el >0 and el!=v:
-                        print("error")   
-            tab[i][j]=amax
+            if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
+                for a in range(nba):      
+                    v=x[count].X
+                    count+=1
+                    tab1.append(v)
+                amax=np.argmax(tab1)
+                tab2[i][j]=amax
+                if(grill[i+1][j+1][0]!=0):
+                    v=tab1[amax]
+                    if (v>0):
+                        for el in tab1:
+                            if el >0 and el!=v:
+                                print(tab1) 
+                        for e in range(nba):
+                            tab[i][j][e]=tab1[e]/np.sum(tab1)
 
 
-    return tab
+    return tab2
