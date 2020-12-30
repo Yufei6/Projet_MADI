@@ -9,7 +9,7 @@ def calculTransfert(grill,i,j,a,p):
     p1=(1+p)/2
     p2=(1-p)/2
     if a==0:#up
-        if(grill[c-1][d][0]==0):
+        if grill[c-1][d][0]==0 :
             up,down,left,right,reset=0,0,0,0,1
         elif grill[c][d-1][0]==0 and grill[c][d+1][0]==0:
             up,down,left,right,reset=1,0,0,0,0
@@ -218,6 +218,7 @@ def optimale(n,m,nba,grill,p,gamma):
                 v=x[i*m*nba+j*nba+a].X
                 tab1.append(v)
             amax=np.argmax(tab1)
+            if(grill[i+1][j+1][0]!=0):
             v=tab1[amax]
             if (v>0):
                 for el in tab1:
@@ -336,5 +337,6 @@ def optimalepure(n,m,nba,grill,p,gamma):
                     if el >0 and el!=v:
                         print("error")   
             tab[i][j]=amax
+
 
     return tab
