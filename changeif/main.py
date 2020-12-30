@@ -17,6 +17,7 @@ def check_down(cj,li):
 	return False
 
 def check_right(cj,li):
+	print("grill",g)
 	if cj<nbcolonnes-1:
 		if g[li,cj+1][0]>0:
 			return True
@@ -32,8 +33,8 @@ def move_proba_up(cj, li):
 	global PosX,PosY,cost,g
 	cu = check_up(cj,li)
 	cd = check_down(cj,li)
-	cl = check_left(cj,li)
-	cr = check_right(cj,li)
+	cl = check_left(cj,li-1)
+	cr = check_right(cj,li-1)
 	if not cl and not cr:
 		PosY -= zoom*20
 		cost[g[li-1,cj,0]]+=g[li-1,cj,1]
@@ -46,34 +47,38 @@ def move_proba_up(cj, li):
 				PosY -= zoom*20
 				cost[g[li-1,cj,0]]+=g[li-1,cj,1]
 			elif p < p0+p1:
+				PosY -= zoom*20
 				PosX += zoom*20
-				cost[g[li,cj+1,0]]+=g[li,cj+1,1] 
+				cost[g[li-1,cj+1,0]]+=g[li-1,cj+1,1] 
 			else:
+				PosY -= zoom*20
 				PosX -= zoom*20
-				cost[g[li,cj-1,0]]+=g[li,cj-1,1] 
+				cost[g[li-1,cj-1,0]]+=g[li-1,cj-1,1] 
 		elif cl and not cr:
 			p0 = (proba+1)/2
 			if p < p0:
 				PosY -= zoom*20
 				cost[g[li-1,cj,0]]+=g[li-1,cj,1]
 			else:
+				PosY -= zoom*20
 				PosX -= zoom*20
-				cost[g[li,cj-1,0]]+=g[li,cj-1,1] 
+				cost[g[li-1,cj-1,0]]+=g[li-1,cj-1,1] 
 		elif not cl and cr:
 			p0 = (proba+1)/2
 			if p < p0:
 				PosY -= zoom*20
 				cost[g[li-1,cj,0]]+=g[li-1,cj,1]
 			else:
+				PosY -= zoom*20
 				PosX += zoom*20
-				cost[g[li,cj+1,0]]+=g[li,cj+1,1] 
+				cost[g[li-1,cj+1,0]]+=g[li-1,cj+1,1] 
 
 def move_proba_down(cj, li):
 	global PosX,PosY,cost,g
 	cu = check_up(cj,li)
 	cd = check_down(cj,li)
-	cl = check_left(cj,li)
-	cr = check_right(cj,li)
+	cl = check_left(cj,li+1)
+	cr = check_right(cj,li+1)
 	if not cl and not cr:
 		PosY += zoom*20
 	else:
@@ -85,32 +90,36 @@ def move_proba_down(cj, li):
 				PosY += zoom*20
 				cost[g[li+1,cj,0]]+=g[li+1,cj,1] 
 			elif p < p0+p1:
+				PosY += zoom*20
 				PosX += zoom*20
-				cost[g[li,cj+1,0]]+=g[li,cj+1,1] 
+				cost[g[li+1,cj+1,0]]+=g[li+1,cj+1,1] 
 			else:
+				PosY += zoom*20
 				PosX -= zoom*20
-				cost[g[li,cj-1,0]]+=g[li,cj-1,1] 
+				cost[g[li+1,cj-1,0]]+=g[li+1,cj-1,1] 
 		elif cl and not cr:
 			p0 = (proba+1)/2
 			if p < p0:
 				PosY += zoom*20
 				cost[g[li+1,cj,0]]+=g[li+1,cj,1] 
 			else:
+				PosY += zoom*20
 				PosX -= zoom*20
-				cost[g[li,cj-1,0]]+=g[li,cj-1,1] 
+				cost[g[li+1,cj-1,0]]+=g[li+1,cj-1,1] 
 		elif not cl and cr:
 			p0 = (proba+1)/2
 			if p < p0:
 				PosY += zoom*20
 				cost[g[li+1,cj,0]]+=g[li+1,cj,1] 
 			else:
+				PosY += zoom*20
 				PosX += zoom*20
-				cost[g[li,cj+1,0]]+=g[li,cj+1,1] 
+				cost[g[li+1,cj+1,0]]+=g[li+1,cj+1,1] 
 
 def move_proba_right(cj, li):
 	global PosX,PosY,cost,g
-	cu = check_up(cj,li)
-	cd = check_down(cj,li)
+	cu = check_up(cj+1,li)
+	cd = check_down(cj+1,li)
 	cl = check_left(cj,li)
 	cr = check_right(cj,li)
 	if not cu and not cd:
@@ -124,32 +133,36 @@ def move_proba_right(cj, li):
 				PosX += zoom*20
 				cost[g[li,cj+1,0]]+=g[li,cj+1,1] 
 			elif p < p0+p1:
+				PosX += zoom*20
 				PosY += zoom*20
-				cost[g[li+1,cj,0]]+=g[li+1,cj,1] 
+				cost[g[li+1,cj+1,0]]+=g[li+1,cj+1,1] 
 			else:
+				PosX += zoom*20
 				PosY -= zoom*20
-				cost[g[li-1,cj,0]]+=g[li-1,cj,1]
+				cost[g[li-1,cj+1,0]]+=g[li-1,cj+1,1]
 		elif cu and not cd:
 			p0 = (proba+1)/2
 			if p < p0:
 				PosX += zoom*20
 				cost[g[li,cj+1,0]]+=g[li,cj+1,1] 
 			else:
+				PosX += zoom*20
 				PosY -= zoom*20
-				cost[g[li-1,cj,0]]+=g[li-1,cj,1]
+				cost[g[li-1,cj+1,0]]+=g[li-1,cj+1,1]
 		elif not cu and cd:
 			p0 = (proba+1)/2
 			if p < p0:
 				PosX += zoom*20
 				cost[g[li,cj+1,0]]+=g[li,cj+1,1] 
 			else:
+				PosX += zoom*20
 				PosY += zoom*20
-				cost[g[li+1,cj,0]]+=g[li+1,cj,1] 
+				cost[g[li+1,cj+1,0]]+=g[li+1,cj+1,1] 
 
 def move_proba_left(cj, li):
 	global PosX,PosY,cost,g
-	cu = check_up(cj,li)
-	cd = check_down(cj,li)
+	cu = check_up(cj-1,li)
+	cd = check_down(cj-1,li)
 	cl = check_left(cj,li)
 	cr = check_right(cj,li)
 	if not cu and not cd:
@@ -163,27 +176,31 @@ def move_proba_left(cj, li):
 				PosX -= zoom*20
 				cost[g[li,cj-1,0]]+=g[li,cj-1,1] 
 			elif p < p0+p1:
+				PosX -= zoom*20
 				PosY += zoom*20
-				cost[g[li+1,cj,0]]+=g[li+1,cj,1] 
+				cost[g[li+1,cj-1,0]]+=g[li+1,cj-1,1] 
 			else:
+				PosX -= zoom*20
 				PosY -= zoom*20
-				cost[g[li-1,cj,0]]+=g[li-1,cj,1]
+				cost[g[li-1,cj-1,0]]+=g[li-1,cj-1,1]
 		elif cu and not cd:
 			p0 = (proba+1)/2
 			if p < p0:
 				PosX -= zoom*20
 				cost[g[li,cj-1,0]]+=g[li,cj-1,1] 
 			else:
+				PosX -= zoom*20
 				PosY -= zoom*20
-				cost[g[li-1,cj,0]]+=g[li-1,cj,1]
+				cost[g[li-1,cj-1,0]]+=g[li-1,cj-1,1]
 		elif not cu and cd:
 			p0 = (proba+1)/2
 			if p < p0:
 				PosX -= zoom*20
 				cost[g[li,cj-1,0]]+=g[li,cj-1,1] 
 			else:
+				PosX -= zoom*20
 				PosY += zoom*20
-				cost[g[li+1,cj,0]]+=g[li+1,cj,1] 
+				cost[g[li+1,cj-1,0]]+=g[li+1,cj-1,1] 
 
 def initialize():
 	global PosX,PosY,cost
@@ -210,7 +227,7 @@ def display_policy():
 			x =zoom*20*j+20
 			if g[i,j,0]>0:       
 				#Canevas.create_oval(x+zoom*(10-3),y+zoom*(10-3),x+zoom*(10+3),y+zoom*(10+3),width=1,outline=color[g[i,j]],fill=color[g[i,j]])
-				if len(policy[i][j]==1):
+				if type(policy[i][j]) is not np.array:
 					if policy[i][j]==0:
 						action_policy = '↑'
 					elif policy[i][j]==1:
@@ -255,7 +272,7 @@ def Clavier(event):
 	if touche == 'Left' and check_left(cj,li):
 		move_proba_left(cj, li)
 	if touche == 'space':
-		if len(policy[li][cj])==1:
+		if type(policy[li][cj]) is not np.array:
 			if policy[li][cj]==0:
 				move_proba_up(cj, li)
 			elif policy[li][cj]==1:

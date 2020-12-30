@@ -27,7 +27,7 @@ def transfer_color(grill, objectif):
                 grill[i,j,0] = grill[i,j,0] * 10000
             elif grill[i,j,0]==-1 * objectif:
                 grill[i,j,0] = grill[i,j,0] * 10000**3
-                print("change",grill[i,j,0])
+                #print("change",grill[i,j,0])
     return grill
 
 def calculV(grill, n,m,i,j,a,p,tab,gamma):
