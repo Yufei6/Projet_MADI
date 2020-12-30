@@ -434,7 +434,7 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 		policy, iteration = itervalue(g, nblignes, nbcolonnes, proba, gamma , e=0.0001, objectif=value_objectif, _q=_q, _color=_color)
 		g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
 		policy=optimalepure(nblignes, nbcolonnes,4 , g1,proba, gamma)
-		print("aaa",policy)
+		#print("aaa",policy)
 		# Craation d'un widget Button (bouton Quitter)
 		# Creation d'un widget Button (bouton Quitter)
 		Button(Mafenetre, text ='Restart', command = initialize).pack(side=LEFT,padx=5,pady=5)
@@ -511,7 +511,7 @@ if __name__ == "__main__":
 	#question 2c
 	_nblignes = 10
 	_nbcolonness = 15
-	_proba = 0.8
+	_proba = 1
 	_weight = [0,1,2,3,4,-1]
 	_gamma = 0.9
 	_display = True
