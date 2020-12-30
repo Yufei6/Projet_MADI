@@ -37,71 +37,82 @@ def calculV(grill, n,m,i,j,a,p,tab,gamma):
     if a==0:#up
         if(grill[c-1][d][0]==0):
             b=tab[i][j]-grill[c][d][0]
-        elif grill[c][d-1][0]==0 and grill[c][d+1][0]==0:
+        elif grill[c-1][d-1][0]==0 and grill[c-1][d+1][0]==0:
             b= -grill[c-1][d][0]+gamma*tab[i-1][j]
-        elif grill[c][d-1][0]==0 and grill[c][d+1][0]!=0:
-            b=-grill[c-1][d][0]*p1-grill[c][d+1][0]*p2+gamma*(tab[i-1][j]*p1+tab[i][j+1]*p2)
-        elif grill[c][d-1][0]!=0 and grill[c][d+1][0]==0:
-            b=-grill[c-1][d][0]*p1-grill[c][d-1][0]*p2+gamma*(tab[i-1][j]*p1+tab[i][j-1]*p2)
+
+        elif grill[c-1][d-1][0]==0 and grill[c-1][d+1][0]!=0:
+            b=-grill[c-1][d][0]*p1-grill[c-1][d+1][0]*p2+gamma*(tab[i-1][j]*p1+tab[i-1][j+1]*p2)
+
+        elif grill[c-1][d-1][0]!=0 and grill[c-1][d+1][0]==0:
+
+            b=-grill[c-1][d][0]*p1-grill[c-1][d-1][0]*p2+gamma*(tab[i-1][j]*p1+tab[i-1][j-1]*p2)
+
         else: 
-            b=-grill[c-1][d][0]*p-grill[c][d-1][0]*p2+grill[c][d+1][0]*p2\
-            +gamma*(tab[i-1][j]*p+tab[i][j-1]*p2+tab[i][j+1]*p2)
+
+            b=-grill[c-1][d][0]*p-grill[c-1][d-1][0]*p2+grill[c-1][d+1][0]*p2\
+            +gamma*(tab[i-1][j]*p+tab[i-1][j-1]*p2+tab[i-1][j+1]*p2)
     if a==1:#down
         if(grill[c+1][d][0]==0):
+
             b=tab[i][j]-grill[c][d][0]
-        elif grill[c][d-1][0]==0 and grill[c][d+1][0]==0:
+        elif grill[c+1][d-1][0]==0 and grill[c+1][d+1][0]==0:
+
             b= -grill[c+1][d][0]\
             +gamma*tab[i+1][j]
-        elif grill[c][d-1][0]==0 and grill[c][d+1][0]!=0:
-            b=-grill[c+1][d][0]*p1-grill[c][d+1][0]*p2\
-            +gamma*(tab[i+1][j]*p1+tab[i][j+1]*p2)
-        elif grill[c][d-1][0]!=0 and grill[c][d+1][0]==0:
-            b=-grill[c+1][d][0]*p1-grill[c][d-1][0]*p2\
-            +gamma*(tab[i+1][j]*p1+tab[i][j-1]*p2)
+        elif grill[c+1][d-1][0]==0 and grill[c+1][d+1][0]!=0:
+
+            b=-grill[c+1][d][0]*p1-grill[c+1][d+1][0]*p2\
+            +gamma*(tab[i+1][j]*p1+tab[i+1][j+1]*p2)
+        elif grill[c+1][d-1][0]!=0 and grill[c+1][d+1][0]==0:
+
+            b=-grill[c+1][d][0]*p1-grill[c+1][d-1][0]*p2\
+            +gamma*(tab[i+1][j]*p1+tab[i+1][j-1]*p2)
         else: 
-            b=-grill[c+1][d][0]*p-grill[c][d-1][0]*p2+grill[c][d+1][0]*p2\
-            +gamma*(tab[i+1][j]*p+tab[i][j-1]*p2+tab[i][j+1]*p2)
+
+            b=-grill[c+1][d][0]*p-grill[c+1][d-1][0]*p2+grill[c+1][d+1][0]*p2\
+            +gamma*(tab[i+1][j]*p+tab[i+1][j-1]*p2+tab[i+1][j+1]*p2)
     if a==2:#left
         if(grill[c][d-1][0]==0):
             
             b=tab[i][j]-grill[c][d][0]
-        elif grill[c+1][d][0]==0 and grill[c-1][d][0]==0:
+        elif grill[c+1][d-1][0]==0 and grill[c-1][d-1][0]==0:
             
             b= -grill[c][d-1][0]\
             +gamma*tab[i][j-1]
-        elif grill[c+1][d][0]==0 and grill[c-1][d][0]!=0:
+        elif grill[c+1][d-1][0]==0 and grill[c-1][d-1][0]!=0:
             
-            b=-grill[c][d-1][0]*p1-grill[c-1][d][0]*p2\
-            +gamma*(tab[i][j-1]*p1+tab[i-1][j]*p2)
-        elif grill[c+1][d][0]!=0 and grill[c-1][d][0]==0:
+            b=-grill[c][d-1][0]*p1-grill[c-1][d-1][0]*p2\
+            +gamma*(tab[i][j-1]*p1+tab[i-1][j-1]*p2)
+        elif grill[c+1][d-1][0]!=0 and grill[c-1][d-1][0]==0:
             
-            b=-grill[c][d-1][0]*p1-grill[c+1][d][0]*p2\
-            +gamma*(tab[i][j-1]*p1+tab[i+1][j]*p2)
+            b=-grill[c][d-1][0]*p1-grill[c+1][d-1][0]*p2\
+            +gamma*(tab[i][j-1]*p1+tab[i+1][j-1]*p2)
         else:
             
-            b=-grill[c][d-1][0]*p-grill[c+1][d][0]*p2+grill[c-1][d][0]*p2\
-            +gamma*(tab[i][j-1]*p+tab[i+1][j]*p2+tab[i-1][j]*p2)
+            b=-grill[c][d-1][0]*p-grill[c+1][d-1][0]*p2+grill[c-1][d-1][0]*p2\
+            +gamma*(tab[i][j-1]*p+tab[i+1][j-1]*p2+tab[i-1][j-1]*p2)
         
     if a==3:#right
         if(grill[c][d+1][0]==0):
             
             b=tab[i][j]-grill[c][d][0]
-        elif grill[c+1][d][0]==0 and grill[c-1][d][0]==0:
+        elif grill[c+1][d+1][0]==0 and grill[c-1][d+1][0]==0:
             
             b= -grill[c][d+1][0]\
             +gamma*tab[i][j+1]
-        elif grill[c+1][d][0]==0 and grill[c-1][d][0]!=0:
+        elif grill[c+1][d+1][0]==0 and grill[c-1][d+1][0]!=0:
             
-            b=-grill[c][d+1][0]*p1-grill[c-1][d][0]*p2\
-            +gamma*(tab[i][j+1]*p1+tab[i-1][j]*p2)
-        elif grill[c+1][d][0]!=0 and grill[c-1][d][0]==0:
+            b=-grill[c][d+1][0]*p1-grill[c-1][d+1][0]*p2\
+            +gamma*(tab[i][j+1]*p1+tab[i-1][j+1]*p2)
+        elif grill[c+1][d+1][0]!=0 and grill[c-1][d+1][0]==0:
             
-            b=-grill[c][d+1][0]*p1-grill[c+1][d][0]*p2\
-            +gamma*(tab[i][j+1]*p1+tab[i+1][j]*p2)
+            b=-grill[c][d+1][0]*p1-grill[c+1][d+1][0]*p2\
+            +gamma*(tab[i][j+1]*p1+tab[i+1][j+1]*p2)
         else:
             
-            b=-grill[c][d+1][0]*p-grill[c+1][d][0]*p2+grill[c-1][d][0]*p2\
-            +gamma*(tab[i][j+1]*p+tab[i+1][j]*p2+tab[i-1][j]*p2)
+            b=-grill[c][d+1][0]*p-grill[c+1][d+1][0]*p2+grill[c-1][d+1][0]*p2\
+            +gamma*(tab[i][j+1]*p+tab[i+1][j+1]*p2+tab[i-1][j+1]*p2)
+            
     return b
 
 def change_grill(grill,n,m, objectif):
