@@ -18,7 +18,7 @@ def calculTransfert(grill,i,j,a,p):
     p1=(1+p)/2
     p2=(1-p)/2
     e,f=transfer(a)
-    up,down,left,right,reset，upleft,upright,downleft,downright=0,0,0,0,0,0,0,0,0
+    up,down,left,right,reset,upleft,upright,downleft,downright=0,0,0,0,0,0,0,0,0
     if a==0:#up
         if grill[c-1][d][0]==0 :
             reset=1
@@ -60,7 +60,7 @@ def calculTransfert(grill,i,j,a,p):
             right=p1
         if grill[c+1][d][0]!=0 and grill[c-1][d][0]!=0:
             right= p
-        if grill[c+1][d][0]!=0
+        if grill[c+1][d][0]!=0:
             downright=p2 
         if grill[c-1][d][0]!=0:          
             upright=p2 
@@ -76,12 +76,12 @@ def calculTransfert(grill,i,j,a,p):
             left=p1
         if grill[c+1][d][0]!=0 and grill[c-1][d][0]!=0:
             left= p
-        if grill[c+1][d][0]!=0
+        if grill[c+1][d][0]!=0:
             downleft=p2 
         if grill[c-1][d][0]!=0:          
             upleft=p2 
             
-    return up,down,left,right,reset，upleft,upright,downleft,downright
+    return up,down,left,right,reset,upleft,upright,downleft,downright
 
 def calculR(grill, i,j,ax,p):
     c=i+1
@@ -176,7 +176,7 @@ def optimale(n,m,nba,grill,p,gamma):
             for a in range(nba):
                 tab[i*m*nba+j*nba+a]+=1
                 if(grill[i+1][j+1][0]!=0):
-                    p,down,left,right,reset，upleft,upright,downleft,downright=calculTransfert(grill,i,j,a,p)
+                    up,down,left,right,reset,upleft,upright,downleft,downright=calculTransfert(grill,i,j,a,p)
                     tab[i*m*nba+j*nba+a]+=reset*gamma
                     if(i>0):
                         tab[(i-1)*m*nba+j*nba+a]+=up*gamma
@@ -256,12 +256,13 @@ def optimale(n,m,nba,grill,p,gamma):
                 v=x[i*m*nba+j*nba+a].X
                 tab1.append(v)
             amax=np.argmax(tab1)
+
             if(grill[i+1][j+1][0]!=0):
-            v=tab1[amax]
-            if (v>0):
-                for el in tab1:
-                    if el >0 and el!=v:
-                        print(tab1)   
+                v=tab1[amax]
+                if (v>0):
+                    for el in tab1:
+                        if el >0 and el!=v:
+                            print(tab1)   
             tab.append(tab1)
     
     return tab
@@ -286,7 +287,7 @@ def optimalepure(n,m,nba,grill,p,gamma):
             for a in range(nba):
                 tab[i*m*nba+j*nba+a]+=1
                 if(grill[i+1][j+1][0]!=0):
-                    up,down,left,right,reset=calculTransfert(grill,i,j,a,p)
+                    up,down,left,right,reset,upleft,upright,downleft,downright=calculTransfert(grill,i,j,a,p)
                     tab[i*m*nba+j*nba+a]+=reset*gamma
                     if(i>0):
                         tab[(i-1)*m*nba+j*nba+a]+=up*gamma
@@ -295,7 +296,15 @@ def optimalepure(n,m,nba,grill,p,gamma):
                     if(j>0):
                         tab[i*m*nba+(j-1)*nba+a]+=left*gamma
                     if(j<n-1):  
-                        tab[i*m*nba+(j-1)*nba+a]+=right*gamma
+                        tab[i*m*nba+(j+1)*nba+a]+=right*gamma
+                    if(i>0 and j>0):
+                        tab[(i-1)*m*nba+(j-1)*nba+a]+=upleft*gamma
+                    if(i>0 and j<n-1):
+                        tab[(i-1)*m*nba+(j+1)*nba+a]+=upright*gamma
+                    if(i<n-1 and j>0):
+                        tab[(i+1)*m*nba+(j-1)*nba+a]+=downleft*gamma
+                    if(i<n-1 and j<n-1):
+                        tab[(i+1)*m*nba+(j+1)*nba+a]+=downright*gamma
             G.append(tab)
     G=np.array(G)
     # Second membre
