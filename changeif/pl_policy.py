@@ -392,19 +392,24 @@ def optimalepure(n,m,nba,grill,p,gamma):
     for i in range(n):
         for j in range(m):
             if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
-                m1.addConstr(quicksum(d[count+a] for a in range(nba)) <= 1, "Contraintess%d" % (i*m+j+nbcont))
+                m1.addConstr(quicksum(d[count*nba+a] for a in range(nba)) <= 1, "Contraintess%d" % (i*m+j+nbcont))
+                print(quicksum(d[count*nba+a] for a in range(nba)) <= 1)
                 count+=1
+    count=0
     for i in range(n):
         for j in range(m):
             if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
                 for a in range(nba):
                     m1.addConstr((1-gamma)*x[count]<= d[count], "Contraintesssss%d" % (i+n*m+nbcont))
+                    #print((1-gamma)*x[count]<= d[count])
+                    count+=1
+                    
     # for  i in colonnes:
     #     m1.addConstr(x[i]<= 1/(1-gamma), "Contraintesssss%d" % (i+n*m+nbcont))
     # Resolution
     m1.optimize()
 
-
+    #print(d)
     # print("")                
     # print('Solution optimale:')
     
