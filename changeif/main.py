@@ -17,7 +17,6 @@ def check_down(cj,li):
 	return False
 
 def check_right(cj,li):
-	print("grill",g)
 	if cj<nbcolonnes-1:
 		if g[li,cj+1][0]>0:
 			return True
