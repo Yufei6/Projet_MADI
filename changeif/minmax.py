@@ -245,7 +245,8 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
                     v=tab1[amax]
                     if (v>0):
                         for el in tab1:
-                            if el >0 and el!=v: 
+                            if el >0 and el!=v:
+                                print(tab1) 
                         for e in range(nba):
                             tab[i][j][e]=tab1[e]/np.sum(tab1)
 

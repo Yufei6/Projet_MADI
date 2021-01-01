@@ -20,13 +20,13 @@ def transfer_color(grill, objectif):
     for i in range(len(grill)):
         for j in range(len(grill[0])):
             if grill[i,j,0]==4:
-                grill[i,j,0] = grill[i,j,0] * 10000**3
+                grill[i,j,0] =  1000**2
             elif grill[i,j,0]==3:
-                grill[i,j,0] = grill[i,j,0] * 10000**2
+                grill[i,j,0] =  1000**1
             elif grill[i,j,0]==2:
-                grill[i,j,0] = grill[i,j,0] * 10000
+                grill[i,j,0] = 1
             elif grill[i,j,0]==-1 * objectif:
-                grill[i,j,0] = grill[i,j,0] * 10000**3
+                grill[i,j,0] =  1000**3
                 #print("change",grill[i,j,0])
     return grill
 
