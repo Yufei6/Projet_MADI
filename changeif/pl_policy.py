@@ -393,7 +393,7 @@ def optimalepure(n,m,nba,grill,p,gamma):
         for j in range(m):
             if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
                 m1.addConstr(quicksum(d[count*nba+a] for a in range(nba)) <= 1, "Contraintess%d" % (i*m+j+nbcont))
-                print(quicksum(d[count*nba+a] for a in range(nba)) <= 1)
+                
                 count+=1
     count=0
     for i in range(n):

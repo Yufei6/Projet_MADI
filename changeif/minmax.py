@@ -200,7 +200,7 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
     r=np.array(r)
     # declaration variables de decision
 
-    z=m1.addVar(vtype=GRB.CONTINUOUS,lb=-500)
+    z=m1.addVar(vtype=GRB.CONTINUOUS,lb=-50000)
 
     # maj du modele pour integrer les nouvelles variables
 
@@ -245,8 +245,7 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
                     v=tab1[amax]
                     if (v>0):
                         for el in tab1:
-                            if el >0 and el!=v:
-                                print(tab1) 
+                            if el >0 and el!=v: 
                         for e in range(nba):
                             tab[i][j][e]=tab1[e]/np.sum(tab1)
 
