@@ -350,6 +350,12 @@ def optimalepure(n,m,nba,grill,p,gamma):
             if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
                 for a in range(nba):
                     x.append(m1.addVar(vtype=GRB.CONTINUOUS, lb=0, name="x%d" % (i*m*nba+j*nba+a+1)))
+    x1= []
+    for i in range(n) :
+        for j in range(m):
+            if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
+                for a in range(nba):
+                    x1.append(m1.addVar(vtype=GRB.CONTINUOUS, lb=0, name="x1a%d" % (i*m*nba+j*nba+a+1)))
     d=[]
     tab=[]
     for i in range(n):
@@ -400,7 +406,8 @@ def optimalepure(n,m,nba,grill,p,gamma):
         for j in range(m):
             if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
                 for a in range(nba):
-                    m1.addConstr((1-gamma)*x[count]<= d[count], "Contraintesssss%d" % (i+n*m+nbcont))
+                    m1.addConstr((1-gamma)*0.1*x1[count]<= d[count], "Contraintesssss%d" % (i+n*m+nbcont))
+                    m1.addConstr(x1[count]== x[count], "Contraintesssss1a%d" % (i+n*m+nbcont))
                     #print((1-gamma)*x[count]<= d[count])
                     count+=1
                     

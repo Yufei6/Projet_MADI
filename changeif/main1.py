@@ -350,7 +350,7 @@ def colordraw(g,nblignes,nbcolonnes, _display=True):
 					Canevas.create_text(x+zoom*(10),y+zoom*(10), text=str(g[i,j,1]),fill=color[g[i,j,0]],font = "Verdana "+str(int(6*zoom))+" bold")
 				else:
 					Canevas.create_rectangle(x, y, x+zoom*20, y+zoom*20, fill=mywalls)
-	set_objectif(g,nblignes, nbcolonnes, 10000000, _display)
+	set_objectif(g,nblignes, nbcolonnes, 1000, _display)
 	#print("GGG",g)
 
 def set_objectif(g, nblignes,nbcolonnes, _value_objectif, _display):
@@ -433,8 +433,8 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 
 
 		policy, iteration = itervalue(g, nblignes, nbcolonnes, proba, gamma , e=0.0001, objectif=value_objectif, _q=_q, _color=_color)
-		#g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
-		#policy=optimalepure(nblignes, nbcolonnes,4 , g1,proba, gamma)
+		g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
+		policy=optimalepure(nblignes, nbcolonnes,4 , g1,proba, gamma)
 		#policy=multioptimale(nblignes, nbcolonnes,4 , g,proba, gamma,value_objectif,4)
 		#print("aaa",policy)
 		# Craation d'un widget Button (bouton Quitter)
@@ -515,7 +515,7 @@ if __name__ == "__main__":
 	_nbcolonness = 15
 	_proba = 1
 	_weight = [0,1,2,3,4,-1]
-	_gamma = 1
+	_gamma = 0.8
 	_display = True
 	_q = 3
 	_color = False
