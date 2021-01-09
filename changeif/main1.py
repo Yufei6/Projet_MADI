@@ -513,9 +513,9 @@ if __name__ == "__main__":
 	#question 2c
 	_nblignes = 10
 	_nbcolonness = 15
-	_proba = 1
+	_proba = 0.8
 	_weight = [0,1,2,3,4,-1]
-	_gamma = 0.8
+	_gamma = 0.9
 	_display = True
 	_q = 3
 	_color = False
