@@ -512,12 +512,13 @@ if __name__ == "__main__":
 	_weight = [0,1,2,3,4,-1]
 	_gamma = 0.9
 	_display = True
-	_q = 1
+	_q = 5
 	_color = False
+	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color)
 
 	#question 2d
 	#_color = True
-	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color)
+	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color)
 
 	
 
