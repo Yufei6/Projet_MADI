@@ -378,7 +378,7 @@ def set_parameters(nbligness , nbcolonness, probas, weights):
 	weight[5] = weights[5]
 
 
-def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _PosY=20, _gamma=0.9, _display=True, _q=1, _color=False):
+def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _PosY=20, _gamma=0.9, _display=True, _q=1, _color=False, _optimizer=0):
 	global g, cost, Pion, zoom, PosX, PosY, Canevas, policy, Largeur, Hauteur, times_list, iterations_list
 	global color, myred, mygreen, myblue, mygrey, myyellow, myblack, mywalls, mywhite, w, wg, wb, wr, wn, ws
 
@@ -429,9 +429,14 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 		Canevas.bind('<Key>',Clavier)
 		Canevas.pack(padx =5, pady =5)
 
-
-		policy, iteration = itervalue(g, nblignes, nbcolonnes, proba, gamma , e=0.0001, objectif=value_objectif, _q=_q, _color=_color)
-
+		if (_optimizer==0):
+			policy, iteration = itervalue(g, nblignes, nbcolonnes, proba, gamma , e=0.0001, objectif=value_objectif, _q=_q, _color=_color)
+		elif (_optimizer==1):
+			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
+			policy=optimalepure(nblignes, nbcolonnes,4 , g1,proba, gamma)
+		elif (_optimizer==2):
+			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
+			policy=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
 		# Craation d'un widget Button (bouton Quitter)
 		# Creation d'un widget Button (bouton Quitter)
 		Button(Mafenetre, text ='Restart', command = initialize).pack(side=LEFT,padx=5,pady=5)
@@ -458,7 +463,14 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 		cost= np.zeros(6, dtype=np.int)
 		colordraw(g,nblignes,nbcolonnes,_display)
 		t0 = time.time()
-		policy, iteration = itervalue(g, nblignes, nbcolonnes, proba, gamma , e=0.0001, objectif=value_objectif)
+		if (_optimizer==0):
+			policy, iteration = itervalue(g, nblignes, nbcolonnes, proba, gamma , e=0.0001, objectif=value_objectif, _q=_q, _color=_color)
+		elif (_optimizer==1):
+			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
+			policy=optimalepure(nblignes, nbcolonnes,4 , g1,proba, gamma)
+		elif (_optimizer==2):
+			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
+			policy=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
 		t1 = time.time()
 		times_list.append(t1-t0)
 		iterations_list.append(iteration)
@@ -500,6 +512,10 @@ def comparer_make_images():
 			plt.ylabel("Iteration mean")
 			plt.show()
 
+def comparer_make_image_3c():
+	global times_list, iterations_list
+	
+
 if __name__ == "__main__":
 
 	#question 2b
@@ -514,11 +530,16 @@ if __name__ == "__main__":
 	_display = True
 	_q = 5
 	_color = False
-	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color)
+	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color)
 
 	#question 2d
 	#_color = True
 	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color)
+
+	#question 3c
+	_mix = True
+	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color, _=)
+
 
 	
 
