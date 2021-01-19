@@ -514,7 +514,7 @@ def comparer_make_images():
 
 def comparer_make_image_3c():
 	global times_list, iterations_list
-	
+
 
 if __name__ == "__main__":
 
@@ -538,7 +538,7 @@ if __name__ == "__main__":
 
 	#question 3c
 	_mix = True
-	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color, _=)
+	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color, _optimizer=2)
 
 
 	
