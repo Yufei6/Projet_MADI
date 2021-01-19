@@ -272,19 +272,10 @@ def optimale(n,m,nba,grill,p,gamma):
                     v=x[count].X
                     count+=1
                     tab1.append(v)
-                amax=np.argmax(tab1)
-                tab2[i][j]=amax
-                if(grill[i+1][j+1][0]!=0):
-                    v=tab1[amax]
-                    if (v>0):
-                        for el in tab1:
-                            if el >0 and el!=v:
-                                print(tab1) 
-                        for e in range(nba):
-                            tab[i][j][e]=tab1[e]/np.sum(tab1)
-
-         
-    return tab2
+                sumtab=np.sum(tab1)
+                for a in range(nba):
+                    tab[i][j][a]=tab1[a]/amax
+    return tab
 
 def optimalepure(n,m,nba,grill,p,gamma):
     
