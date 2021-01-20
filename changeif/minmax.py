@@ -226,11 +226,11 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
     # print("")
     # print('Valeur de la fonction objectif :', m.objVal)
     # print("dico :",dico_opt)
+  
+
     tab=np.zeros((n,m,nba))
     tab2=np.zeros((n,m))
     count=0
-    print(z.x)
-
     for i in range(n):
         for j in range(m):
             tab1=[]
@@ -239,17 +239,9 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
                     v=x[count].X
                     count+=1
                     tab1.append(v)
-                amax=np.argmax(tab1)
-                tab2[i][j]=amax
-                if(grill[i+1][j+1][0]!=0):
-                    v=tab1[amax]
-                    if (v>0):
-                        for el in tab1:
-                            if el >0 and el!=v:
-                                print(tab1) 
-                                print(i,j)
-                        for e in range(nba):
-                            tab[i][j][e]=tab1[e]/np.sum(tab1)
+                sumtab=np.sum(tab1)
+                for a in range(nba):
+                    tab[i][j][a]=tab1[a]/sumtab
 
 
-    return tab2
+    return tab ,m1.objVal
