@@ -8,7 +8,7 @@ def transfer_colortonumber(_grill):
             if grill[i,j,0]!=5 and grill[i,j,0]>0:
                 grill[i,j,0] = grill[i,j,1]
             if grill[i,j,0]==5:
-                grill[i,j,0]=1000
+                grill[i,j,0]=10000
     return grill
 def transfer(a):
     if a==0:
@@ -100,7 +100,7 @@ def calculR(grill, i,j,ax,p):
     if ax==0:#up
         if(grill[c-1][d][0]==0):
 
-            a=-grill[c][d][0]
+            a=-grill[c][d][0]-1000
         elif grill[c-1][d-1][0]==0 and grill[c-1][d+1][0]==0:
 
             a= -grill[c-1][d][0]
@@ -116,7 +116,7 @@ def calculR(grill, i,j,ax,p):
     if ax==1:#down
         if(grill[c+1][d][0]==0):
 
-            a=-grill[c][d][0]
+            a=-grill[c][d][0]-1000
         elif grill[c+1][d-1][0]==0 and grill[c+1][d+1][0]==0:
 
             a= -grill[c+1][d][0]
@@ -132,7 +132,7 @@ def calculR(grill, i,j,ax,p):
     if ax==2:#left
         if(grill[c][d-1][0]==0):
             
-            a=-grill[c][d][0]
+            a=-grill[c][d][0]-1000
         elif grill[c+1][d-1][0]==0 and grill[c-1][d-1][0]==0:
             
             a= -grill[c][d-1][0]
@@ -149,7 +149,7 @@ def calculR(grill, i,j,ax,p):
     if ax==3:#right
         if(grill[c][d+1][0]==0):
             
-            a=-grill[c][d][0]
+            a=-grill[c][d][0]-1000
         elif grill[c+1][d+1][0]==0 and grill[c-1][d+1][0]==0:
             
             a= -grill[c][d+1][0]

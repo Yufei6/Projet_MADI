@@ -435,7 +435,7 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 		#policy, iteration = itervalue(g, nblignes, nbcolonnes, proba, gamma , e=0.0001, objectif=value_objectif, _q=_q, _color=_color)
 		g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
 		g1=transfer_colortonumber(g1)
-		policy,abc=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
+		policy,abc=optimalepure(nblignes, nbcolonnes,4 , g1,proba, gamma)
 		#policy=multioptimale(nblignes, nbcolonnes,4 , g,proba, gamma,value_objectif,4)
 		#print("aaa",policy)
 		# Craation d'un widget Button (bouton Quitter)
