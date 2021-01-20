@@ -320,6 +320,43 @@ def Clavier(event):
 	wn.config(text=str(cost[4]))
 	ws.config(text='     total = '+str(cost[0]))
 
+def autoWalk():
+	global policy,PosX,PosY
+	cj=round((PosX-30)/(20*zoom))
+	li=round((PosY-30)/(20*zoom))
+	max_step = 100
+	reussi = False
+	for i in range(0,max_step):
+		if li==nblignes-1 and cj==nbcolonnes-1:
+			reussi = True
+			break
+		if type(policy[li][cj]) is int:
+			if policy[li][cj]==0:
+				move_proba_up(cj, li)
+			elif policy[li][cj]==1:
+				move_proba_down(cj, li)
+			elif policy[li][cj]==2:
+				move_proba_left(cj, li)
+			elif policy[li][cj]==3:
+				move_proba_right(cj, li)
+		else:
+			p_up = policy[li][cj][0]
+			p_down = policy[li][cj][1]
+			p_left = policy[li][cj][2]
+			p_right = policy[li][cj][3]
+			p = np.random.uniform(0,1)
+			
+			if p <= p_up:
+				move_proba_up(cj, li)
+			elif p<= p_up + p_down:
+				move_proba_down(cj, li)
+			elif p<= p_up + p_down + p_left:
+				move_proba_left(cj, li)
+			elif p<= p_up + p_down + p_left + p_right:
+				move_proba_right(cj, li)
+
+	return reussi, np.array([cost[1],cost[2],cost[3],cost[4]])
+
 
 def colordraw(g,nblignes,nbcolonnes, _display=True):
 	pblanc=0.1
