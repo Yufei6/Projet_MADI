@@ -15,7 +15,7 @@ def calculobj(i,j,ax,obj,tab,grill,p):
     if ax==0:#up
         if(grill[c-1][d][0]==0 ):
 
-            a=-tab[i][j][1]*(grill[c][d][0]==obj)
+            a=-tab[i][j][1]*(grill[c][d][0]==obj)-1000
         elif grill[c-1][d-1][0]==0 and grill[c-1][d+1][0]==0 :
 
             a= -tab[i-1][j][1]*(grill[c-1][d][0]==obj)
@@ -34,7 +34,7 @@ def calculobj(i,j,ax,obj,tab,grill,p):
     if ax==1:#down
         if(grill[c+1][d][0]==0 ):
 
-            a=-tab[i][j][1]*(grill[c][d][0]==obj)
+            a=-tab[i][j][1]*(grill[c][d][0]==obj)-1000
         elif grill[c+1][d-1][0]==0 and grill[c+1][d+1][0]==0 :
 
             a= -tab[i+1][j][1]*(grill[c+1][d][0]==obj)
@@ -53,7 +53,7 @@ def calculobj(i,j,ax,obj,tab,grill,p):
     if ax==2:#left
         if(grill[c][d-1][0]==0 ):
 
-            a=-tab[i][j][1]*(grill[c][d][0]==obj)
+            a=-tab[i][j][1]*(grill[c][d][0]==obj)-1000
         elif grill[c+1][d-1][0]==0 and grill[c-1][d-1][0]==0 :
 
             a= -tab[i][j-1][1]*(grill[c][d-1][0]==obj)
@@ -73,7 +73,7 @@ def calculobj(i,j,ax,obj,tab,grill,p):
     if ax==3:#right
         if(grill[c][d+1][0]==0 ):
 
-            a=-tab[i][j][1]*(grill[c][d][0]==obj)
+            a=-tab[i][j][1]*(grill[c][d][0]==obj)-1000
         elif grill[c+1][d+1][0]==0 and grill[c-1][d+1][0]==0 :
 
             a= -tab[i][j+1][1]*(grill[c][d+1][0]==obj)
