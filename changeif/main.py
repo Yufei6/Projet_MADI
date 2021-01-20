@@ -228,7 +228,7 @@ def display_policy():
 			x =zoom*20*j+20
 			if g[i,j,0]>0:       
 				#Canevas.create_oval(x+zoom*(10-3),y+zoom*(10-3),x+zoom*(10+3),y+zoom*(10+3),width=1,outline=color[g[i,j]],fill=color[g[i,j]])
-				if type(policy[i][j]) is not np.array:
+				if type(policy[i][j]) is int:
 					if policy[i][j]==0:
 						action_policy = '↑'
 					elif policy[i][j]==1:
@@ -284,7 +284,7 @@ def Clavier(event):
 	if touche == 'Left' and check_left(cj,li):
 		move_proba_left(cj, li)
 	if touche == 'space':
-		if type(policy[li][cj]) is not np.array:
+		if type(policy[li][cj]) is int:
 			if policy[li][cj]==0:
 				move_proba_up(cj, li)
 			elif policy[li][cj]==1:
