@@ -1,6 +1,15 @@
 import gurobipy as gb
 from gurobipy import *
 import numpy as np
+def transfer_colortonumber(_grill):
+    grill = np.copy(_grill)
+    for i in range(len(grill)):
+        for j in range(len(grill[0])):
+            if grill[i,j,0]!=5 and grill[i,j,0]>0:
+                grill[i,j,0] = grill[i,j,1]
+            if grill[i,j,0]==5:
+                grill[i,j,0]=1000
+    return grill
 def transfer(a):
     if a==0:
         return(-1,0)

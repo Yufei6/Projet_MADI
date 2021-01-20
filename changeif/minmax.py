@@ -6,7 +6,7 @@ from pl_policy import *
 
 
 
-def calculobj(i,j,ax,obj,tab,grill,p):
+def calculobj(i,j,ax,obj,tab,grill,p,n,m):
 
     c=i+1
     d=j+1
@@ -192,7 +192,7 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
             for j in range(m):
                 if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
                     for a in range(nba):
-                            reward=calculobj(i,j,a,obj,grill1,grill,p)
+                            reward=calculobj(i,j,a,obj,grill1,grill,p,n,m)
                             rx.append(reward)
         r.append(rx)
     # Coefficients de la fonction objectif
@@ -208,7 +208,7 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
     obj = LinExpr();
     obj =z
     m1.setObjective(obj,GRB.MAXIMIZE)
-    m1.setParam("OutputFlag",False)
+    m1.setParam("OutputFlag",True)
 
 
     # definition de l'objectif
@@ -247,6 +247,7 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
                         for el in tab1:
                             if el >0 and el!=v:
                                 print(tab1) 
+                                print(i,j)
                         for e in range(nba):
                             tab[i][j][e]=tab1[e]/np.sum(tab1)
 
