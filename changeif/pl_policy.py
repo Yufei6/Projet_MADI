@@ -275,7 +275,7 @@ def optimale(n,m,nba,grill,p,gamma):
                 sumtab=np.sum(tab1)
                 for a in range(nba):
                     tab[i][j][a]=tab1[a]/sumtab
-    return tab
+    return tab , m1.objVal
 
 def optimalepure(n,m,nba,grill,p,gamma):
     
@@ -437,4 +437,4 @@ def optimalepure(n,m,nba,grill,p,gamma):
                             tab[i][j][e]=tab1[e]/np.sum(tab1)
 
 
-    return tab2
+    return tab2 , m1.objVal
