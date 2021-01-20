@@ -449,10 +449,14 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 			policy, iteration = itervalue(g, nblignes, nbcolonnes, proba, gamma , e=0.0001, objectif=value_objectif, _q=_q, _color=_color)
 		elif (_optimizer==1):
 			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
-			policy=optimalepure(nblignes, nbcolonnes,4 , g1,proba, gamma)
+			policy,valeur=optimalepure(nblignes, nbcolonnes,4 , g1,proba, gamma)
 		elif (_optimizer==2):
 			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
-			policy=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
+			policy,valeur=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
+		elif (_optimizer==4):
+			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
+			g1=transfer_colortonumber(g1)
+			policy,valeur=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
 		# Craation d'un widget Button (bouton Quitter)
 		# Creation d'un widget Button (bouton Quitter)
 		Button(Mafenetre, text ='Restart', command = initialize).pack(side=LEFT,padx=5,pady=5)
@@ -507,6 +511,11 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 			t3 = time.time()
 			times_list2.append(t3-t2)
 			valeurs_list2.append(valeur2)
+
+		elif (_optimizer==4):
+			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
+			g1=transfer_colortonumber(g1)
+			policy,valeur=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
 
 def comparer_make_images():
 	global times_list, iterations_list
@@ -622,7 +631,8 @@ if __name__ == "__main__":
 	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color)
 
 	#question 3c
-	comparer_make_image_3c()
+	#comparer_make_image_3c()
 
-	
+	#question 4a
+	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color, _optimizer=4)
 
