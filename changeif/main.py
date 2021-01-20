@@ -3,6 +3,8 @@ from recherche_policy import *
 import numpy as np
 import time
 import matplotlib.pyplot as plt
+from pl_policy import *
+from minmax import *
 
 def check_up(cj,li):
 	if li>0:
@@ -235,6 +237,17 @@ def display_policy():
 						action_policy = '←'
 					elif policy[i][j]==3:
 						action_policy = '→'
+				else:
+					index = np.argmax(policy[i][j])
+					if index==0:
+						action_policy = 'p↑'
+					elif index==1:
+						action_policy = 'p↓'
+					elif index==2:
+						action_policy = 'p←'
+					elif index==3:
+						action_policy = 'p→'
+
 				cv.create_text(x+zoom*(10),y+zoom*(10), text=action_policy,fill=mygreen,font = "Verdana "+str(int(6*zoom))+" bold")
 			else:
 				cv.create_rectangle(x, y, x+zoom*20, y+zoom*20, fill=mywalls)
@@ -286,13 +299,16 @@ def Clavier(event):
 			p_left = policy[li][cj][2]
 			p_right = policy[li][cj][3]
 			p = np.random.uniform(0,1)
-			"""
+			
 			if p <= p_up:
-
-			elif p<= p_up + p_down
-
-			el
-			"""
+				move_proba_up(cj, li)
+			elif p<= p_up + p_down:
+				move_proba_down(cj, li)
+			elif p<= p_up + p_down + p_left:
+				move_proba_left(cj, li)
+			elif p<= p_up + p_down + p_left + p_right:
+				move_proba_right(cj, li)
+			
 	# on dessine le pion a sa nouvelle position
 	Canevas.coords(Pion,PosX -9*zoom, PosY -9*zoom, PosX +9*zoom, PosY +9*zoom)
 	cost[0]=0    
@@ -379,7 +395,7 @@ def set_parameters(nbligness , nbcolonness, probas, weights):
 
 
 def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _PosY=20, _gamma=0.9, _display=True, _q=1, _color=False, _optimizer=0):
-	global g, cost, Pion, zoom, PosX, PosY, Canevas, policy, Largeur, Hauteur, times_list, iterations_list
+	global g, cost, Pion, zoom, PosX, PosY, Canevas, policy, Largeur, Hauteur, times_list, iterations_list, valeurs_list, times_list2, valeurs_list2
 	global color, myred, mygreen, myblue, mygrey, myyellow, myblack, mywalls, mywhite, w, wg, wb, wr, wn, ws
 
 	set_parameters(_nblignes , _nbcolonness, _proba, _weight)
@@ -465,15 +481,32 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 		t0 = time.time()
 		if (_optimizer==0):
 			policy, iteration = itervalue(g, nblignes, nbcolonnes, proba, gamma , e=0.0001, objectif=value_objectif, _q=_q, _color=_color)
+			t1 = time.time()
+			times_list.append(t1-t0)
+			iterations_list.append(iteration)
 		elif (_optimizer==1):
 			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
 			policy=optimalepure(nblignes, nbcolonnes,4 , g1,proba, gamma)
+			t1 = time.time()
+			times_list.append(t1-t0)
 		elif (_optimizer==2):
 			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
 			policy=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
-		t1 = time.time()
-		times_list.append(t1-t0)
-		iterations_list.append(iteration)
+			t1 = time.time()
+			times_list.append(t1-t0)
+		#_optimizer==3 est fait que pour la question 3C
+		elif (_optimizer==3):
+			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
+			policy, valeur=optimalepure(nblignes, nbcolonnes,4 , g1,proba, gamma)
+			t1 = time.time()
+			times_list.append(t1-t0)
+			valeurs_list.append(valeur)
+			t2 = time.time()
+			g2=change_grill(g,nblignes, nbcolonnes,value_objectif)
+			policy, valeur2=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
+			t3 = time.time()
+			times_list2.append(t3-t2)
+			valeurs_list2.append(valeur2)
 
 def comparer_make_images():
 	global times_list, iterations_list
@@ -513,8 +546,60 @@ def comparer_make_images():
 			plt.show()
 
 def comparer_make_image_3c():
-	global times_list, iterations_list
+	global times_list, valeurs_list, times_list2, valeurs_list2
+	_weight = [0,1,2,3,4,-1]
+	nbl,nbc = 10,15
+	for p in [1,0.6]:
+		times_mean=[]
+		valeurs_mean=[]
+		times_mean2=[]
+		valeurs_mean2=[]
+		for g in [0.9,0.7,0.5]:
+			times_list=[]
+			valeurs_list=[]
+			times_list2=[]
+			valeurs_list2=[]
+			for i in range(15):
+				init_game(nbl , nbc, _proba=p, _weight=_weight, _gamma=g, _display=False, _optimizer=3)
+			times_mean.append(np.mean(np.array(times_list)))
+			valeurs_mean.append(np.mean(np.array(valeurs_list)))
+			times_mean2.append(np.mean(np.array(times_list2)))
+			valeurs_mean2.append(np.mean(np.array(valeurs_list2)))
 
+		x = [0.9,0.7,0.5]
+
+		ln1, = plt.plot(x, times_mean, color='red')
+		ln2, = plt.plot(x, times_mean2, color='green')
+		plt.legend(handles=[ln1,ln2],labels=['time mean pure','time mean mixte'])
+		plt.title("Moyenne de temps")
+		plt.savefig('./Results/3C/'+str(p)+"_"+str(nbl)+"mult"+str(nbc)+"_time.jpg")
+		plt.xlabel("Different gamma")
+		plt.ylabel("Time mean")
+		plt.show()
+		ln3, = plt.plot(x, valeurs_mean, color='red')
+		ln4, = plt.plot(x, valeurs_mean2, color='green')
+		plt.legend(handles=[ln3,ln4],labels=['value mean pure','value mean mixte'])
+		plt.title("Moyenne de valeurs")
+		plt.savefig('./Results/3C/'+str(p)+"_"+str(nbl)+"mult"+str(nbc)+"_valeurComparaison.jpg")
+		plt.xlabel("Different gamma")
+		plt.ylabel("Value mean")
+		plt.show()
+
+		ln3, = plt.plot(x, valeurs_mean, color='red')
+		plt.legend(handles=[ln3],labels=['value mean mixte'])
+		plt.title("Moyenne de valeurs")
+		plt.savefig('./Results/3C/'+str(p)+"_"+str(nbl)+"mult"+str(nbc)+"_valeurPure.jpg")
+		plt.xlabel("Different gamma")
+		plt.ylabel("Value mean")
+		plt.show()
+
+		ln4, = plt.plot(x, valeurs_mean2, color='green')
+		plt.legend(handles=[ln4],labels=['value mean mixte'])
+		plt.title("Moyenne de valeurs")
+		plt.savefig('./Results/3C/'+str(p)+"_"+str(nbl)+"mult"+str(nbc)+"_valeurMixte.jpg")
+		plt.xlabel("Different gamma")
+		plt.ylabel("Value mean")
+		plt.show()
 
 if __name__ == "__main__":
 
@@ -537,9 +622,7 @@ if __name__ == "__main__":
 	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color)
 
 	#question 3c
-	_mix = True
-	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color, _optimizer=2)
-
+	comparer_make_image_3c()
 
 	
 
