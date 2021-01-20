@@ -15,7 +15,7 @@ def calculobj(i,j,ax,obj,tab,grill,p,n,m):
     if ax==0:#up
         if(grill[c-1][d][0]==0 ):
 
-            a=-tab[i][j][1]*(grill[c][d][0]==obj)-1000
+            a=-tab[i][j][1]*(grill[c][d][0]==obj)
         elif grill[c-1][d-1][0]==0 and grill[c-1][d+1][0]==0 :
 
             a= -tab[i-1][j][1]*(grill[c-1][d][0]==obj)
@@ -34,7 +34,7 @@ def calculobj(i,j,ax,obj,tab,grill,p,n,m):
     if ax==1:#down
         if(grill[c+1][d][0]==0 ):
 
-            a=-tab[i][j][1]*(grill[c][d][0]==obj)-1000
+            a=-tab[i][j][1]*(grill[c][d][0]==obj)
         elif grill[c+1][d-1][0]==0 and grill[c+1][d+1][0]==0 :
 
             a= -tab[i+1][j][1]*(grill[c+1][d][0]==obj)
@@ -53,7 +53,7 @@ def calculobj(i,j,ax,obj,tab,grill,p,n,m):
     if ax==2:#left
         if(grill[c][d-1][0]==0 ):
 
-            a=-tab[i][j][1]*(grill[c][d][0]==obj)-1000
+            a=-tab[i][j][1]*(grill[c][d][0]==obj)
         elif grill[c+1][d-1][0]==0 and grill[c-1][d-1][0]==0 :
 
             a= -tab[i][j-1][1]*(grill[c][d-1][0]==obj)
@@ -73,7 +73,7 @@ def calculobj(i,j,ax,obj,tab,grill,p,n,m):
     if ax==3:#right
         if(grill[c][d+1][0]==0 ):
 
-            a=-tab[i][j][1]*(grill[c][d][0]==obj)-1000
+            a=-tab[i][j][1]*(grill[c][d][0]==obj)
         elif grill[c+1][d+1][0]==0 and grill[c-1][d+1][0]==0 :
 
             a= -tab[i][j+1][1]*(grill[c][d+1][0]==obj)
@@ -231,6 +231,8 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
     tab=np.zeros((n,m,nba))
     tab2=np.zeros((n,m))
     count=0
+    count1=0
+    objtab=np.zeros(color)
     for i in range(n):
         for j in range(m):
             tab1=[]
@@ -242,6 +244,13 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
                 sumtab=np.sum(tab1)
                 for a in range(nba):
                     tab[i][j][a]=tab1[a]/sumtab
+                for obj in range(color):
+                    for a in range(nba):
+                        objtab[obj]+=tab[i][j][a]*r[obj][count1+a]
+                count1+=nba
+    for obj in range(color):
+        for a in range(nba):
+            objtab[obj]=tab[0][0][a]*r[obj][a]
+    print(objtab)
 
-
-    return tab ,m1.objVal
+    return tab ,objtab
