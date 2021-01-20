@@ -329,6 +329,9 @@ def autoWalk():
 	max_step = 100
 	reussi = False
 	for i in range(0,max_step):
+		cj=round((PosX-30)/(20*zoom))
+		li=round((PosY-30)/(20*zoom))
+		#print("iter-",i," li:cj",li,'**',cj)
 		if li==nblignes-1 and cj==nbcolonnes-1:
 			reussi = True
 			break
