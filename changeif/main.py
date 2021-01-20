@@ -5,6 +5,7 @@ import time
 import matplotlib.pyplot as plt
 from pl_policy import *
 from minmax import *
+from datetime import datetime
 
 def check_up(cj,li):
 	if li>0:
@@ -219,6 +220,7 @@ def initialize():
 	ws.config(text='     total = '+str(cost[0]))
 
 def display_policy():
+	print("ppp",policy)
 	window = Tk()
 	window.title("Politique Total")
 	cv = Canvas(window, width = Largeur, height =Hauteur, bg =mywhite)
@@ -228,7 +230,7 @@ def display_policy():
 			x =zoom*20*j+20
 			if g[i,j,0]>0:       
 				#Canevas.create_oval(x+zoom*(10-3),y+zoom*(10-3),x+zoom*(10+3),y+zoom*(10+3),width=1,outline=color[g[i,j]],fill=color[g[i,j]])
-				if type(policy[i][j]) is int:
+				if type(policy[i][j]) is np.float64:
 					if policy[i][j]==0:
 						action_policy = '↑'
 					elif policy[i][j]==1:
@@ -284,7 +286,7 @@ def Clavier(event):
 	if touche == 'Left' and check_left(cj,li):
 		move_proba_left(cj, li)
 	if touche == 'space':
-		if type(policy[li][cj]) is int:
+		if type(policy[li][cj]) is np.float64:
 			if policy[li][cj]==0:
 				move_proba_up(cj, li)
 			elif policy[li][cj]==1:
@@ -356,6 +358,13 @@ def autoWalk():
 				move_proba_right(cj, li)
 
 	return reussi, np.array([cost[1],cost[2],cost[3],cost[4]])
+
+def restart():
+	global PosX, PosY, cost
+	PosX = 20+10*zoom
+	PosY = 20+10*zoom
+	cost= np.zeros(6, dtype=np.int)
+
 
 
 def colordraw(g,nblignes,nbcolonnes, _display=True):
@@ -490,10 +499,17 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 		elif (_optimizer==2):
 			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
 			policy,valeur=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
+		elif (_optimizer==3):
+			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
+			policy, valeur=optimalepure(nblignes, nbcolonnes,4 , g1,proba, gamma)
+			g2=change_grill(g,nblignes, nbcolonnes,value_objectif)
+			policy, valeur2=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
 		elif (_optimizer==4):
 			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
 			g1=transfer_colortonumber(g1)
 			policy,valeur=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
+		elif (_optimizer==5):
+			policy, valeur = multioptimale(nblignes, nbcolonnes, 4, g, proba,gamma,objectif=value_objectif,color=4)
 		# Craation d'un widget Button (bouton Quitter)
 		# Creation d'un widget Button (bouton Quitter)
 		Button(Mafenetre, text ='Restart', command = initialize).pack(side=LEFT,padx=5,pady=5)
@@ -553,6 +569,13 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 			g1=change_grill(g,nblignes, nbcolonnes,value_objectif)
 			g1=transfer_colortonumber(g1)
 			policy,valeur=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
+
+		elif (_optimizer==5):
+			policy, valeur = multioptimale(nblignes, nbcolonnes, 4, g, proba,gamma,objectif=value_objectif,color=4)
+			t1 = time.time()
+			times_list.append(t1-t0)
+			valeurs_list.append(valeur)
+
 
 def comparer_make_images():
 	global times_list, iterations_list
@@ -647,6 +670,110 @@ def comparer_make_image_3c():
 		plt.ylabel("Value mean")
 		plt.show()
 
+
+def comparer_make_image_4c():
+	global times_list, valeurs_list, times_list2, valeurs_list2
+	_weight = [0,1,2,3,4,-1]
+	nbl,nbc = 10,15
+	g=1
+	p=1
+	times_mean=[]
+	times_mean2=[]
+	times_list=[]
+	for i in range(15):
+		init_game(nbl , nbc, _proba=p, _weight=_weight, _gamma=g, _display=False, _optimizer=5)
+	times_mean.append(np.mean(np.array(times_list)))
+	
+	p=0.7
+	for i in range(15):
+		init_game(nbl , nbc, _proba=p, _weight=_weight, _gamma=g, _display=False, _optimizer=5)
+	times_mean2.append(np.mean(np.array(times_list)))
+
+	ln1, = plt.plot(x, times_mean, color='red')
+	ln2, = plt.plot(x, times_mean2, color='green')
+	plt.legend(handles=[ln1,ln2],labels=['time p=1','time p=0.7'])
+	plt.title("Moyenne de temps")
+	plt.savefig('./Results/4C/'+str(p)+"_"+str(nbl)+"mult"+str(nbc)+"_time.jpg")
+	plt.xlabel("Different p")
+	plt.ylabel("Time mean")
+	plt.show()
+
+	#on prend une instance et executer 15 fois
+	valeurs_list=[]
+	init_game(nbl, nbc, _proba=0.7, _weight=_weight, _gamma=1, _display=False, _optimizer=5)
+	scores_list1=[]
+	scores_list2=[]
+	scores_list3=[]
+	scores_list4=[]
+	for i in range(15):
+		reussi,scoreTab = autoWalk()
+		scores_list1.append(scoreTab[0])
+		scores_list2.append(scoreTab[1])
+		scores_list3.append(scoreTab[2])
+		scores_list4.append(scoreTab[3])
+	score1 = np.mean(np.array(scores_list1))
+	score2 = np.mean(np.array(scores_list2))
+	score3 = np.mean(np.array(scores_list3))
+	score4 = np.mean(np.array(scores_list4))
+	score_espere1 = valeurs_list[0][0]
+	score_espere2 = valeurs_list[0][1]
+	score_espere3 = valeurs_list[0][2]
+	score_espere4 = valeurs_list[0][3]
+
+	name_list = ['Green','Blue','Red','Black']
+	num_list = [score1, score2, score3, score4]
+	num_list1 = [score_espere1, score_espere2, score_espere3, score_espere4]
+
+	x =list(range(len(num_list)))
+	total_width, n = 0.8, 2
+	width = total_width / n
+	 
+	plt.bar(x, num_list, width=width, label='moyen 15-tests',fc = 'y')
+	for i in range(len(x)):
+	    x[i] = x[i] + width
+	plt.bar(x, num_list1, width=width, label='valeurs espées',tick_label = name_list,fc = 'r')
+	plt.title("Comparaison 4c")
+	plt.savefig('./Results/4C/'+str(p)+"_"+str(nbl)+"mult"+str(nbc)+"_scoreComparaison.jpg")
+	plt.legend()
+	plt.show()
+
+def comparer_make_image_4d():
+	global policy, cost, g
+	_weight = [0,1,2,3,4,-1]
+	nbl,nbc = 10,15
+	p=0.8
+	init_game(nbl, nbc, _proba=0.7, _weight=_weight, _gamma=1, _display=True, _optimizer=5)
+	reussi_b, score_b = autoWalk()
+	valeur_b = [score_b[0], score_b[1], score_b[2], score_b[3]]
+	restart()
+	g1=change_grill(g,nbl, nbc,1000)
+	g1=transfer_colortonumber(g1)
+	policy,valeur=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma=1)
+	reussi_a, score_a = autoWalk()
+	valeur_a = [score_a[0], score_a[1], score_a[2], score_a[3]]
+	print("Reussi (a)? ",reussi_a,'\nReussi (b)? ',reussi_b)
+	name_list = ['Green','Blue','Red','Black']
+	num_list = score_a
+	num_list1 = score_b
+
+	x =list(range(len(num_list)))
+	total_width, n = 0.8, 2
+	width = total_width / n
+	 
+	plt.bar(x, num_list, width=width, label='4(a)',fc = 'red')
+	for i in range(len(x)):
+	    x[i] = x[i] + width
+	plt.bar(x, num_list1, width=width, label='4(b)',tick_label = name_list,fc = 'blue')
+	plt.title("Comparaison 4d")
+	now = datetime.now() 
+	time = now.strftime("%H:%M:%S")
+	plt.savefig('./Results/4D/'+str(p)+"_"+str(nbl)+"mult"+str(nbc)+"_comparaisonScore_"+str(time)+".jpg")
+	plt.legend()
+	plt.show()
+	return reussi_a, reussi_b, valeur_a, valeur_b
+
+
+
 if __name__ == "__main__":
 
 	#question 2b
@@ -664,12 +791,17 @@ if __name__ == "__main__":
 	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color)
 
 	#question 2d
-	#_color = True
+	_color = True
 	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color)
 
 	#question 3c
-	comparer_make_image_3c()
+	#comparer_make_image_3c()
 
 	#question 4a
 	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color, _optimizer=4)
 
+	#question 4c
+	#comparer_make_image_4c()
+
+	#question 4d
+	comparer_make_image_4d()
