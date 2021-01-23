@@ -23,4 +23,4 @@ _q :la puissance
 _optimizer: 0 pour value iteration
             1 pour strategie pure
             2 pour strategie mixte
-            4 pour strategie minmax
+            5 pour strategie minmax
