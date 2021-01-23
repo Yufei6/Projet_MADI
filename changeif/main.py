@@ -676,6 +676,7 @@ def comparer_make_image_3c():
 
 def comparer_make_image_4c():
 	global times_list, valeurs_list, times_list2, valeurs_list2
+	valeurs_list=[]
 	_weight = [0,1,2,3,4,-1]
 	nbl,nbc = 10,15
 	g=1
@@ -686,11 +687,15 @@ def comparer_make_image_4c():
 	for i in range(15):
 		init_game(nbl , nbc, _proba=p, _weight=_weight, _gamma=g, _display=False, _optimizer=5)
 	times_mean.append(np.mean(np.array(times_list)))
+	times_mean.append(np.mean(np.array(times_list)))
 	
 	p=0.7
 	for i in range(15):
 		init_game(nbl , nbc, _proba=p, _weight=_weight, _gamma=g, _display=False, _optimizer=5)
+	print(times_list)
 	times_mean2.append(np.mean(np.array(times_list)))
+	times_mean2.append(np.mean(np.array(times_list)))
+	x = [0.7,1]
 
 	ln1, = plt.plot(x, times_mean, color='red')
 	ln2, = plt.plot(x, times_mean2, color='green')
@@ -805,11 +810,11 @@ if __name__ == "__main__":
 	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color, _optimizer=4)
 
 	#question 4c
-	#comparer_make_image_4c()
+	comparer_make_image_4c()
 
 	#question 4d
 	#comparer_make_image_4d()
 
 
 	#Default mond
-	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=1, _color=_color, _optimizer=_optimizer)
+	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=1, _color=_color, _optimizer=_optimizer)
