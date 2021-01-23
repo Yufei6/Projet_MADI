@@ -790,7 +790,8 @@ if __name__ == "__main__":
 	_gamma = 0.9
 	_display = True
 	_q = 5
-	_color = False 
+	_color = False
+	_optimizer =0 
 	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color)
 
 	#question 2d
@@ -811,4 +812,4 @@ if __name__ == "__main__":
 
 
 	#Default mond
-	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=1, _color=_color)
+	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=1, _color=_color, _optimizer=_optimizer)
