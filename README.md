@@ -1,6 +1,6 @@
 # Projet_MADI
 Projet MADI Master2 ANDROIDE Sorbonne Universit
-Notre répertoire contient:
+Notre répertoire contient:  
 -ResultsPNG/* : les images de résultats que nous avons obtenus
 -README : le fichier explicatique de l'archive
 -fichier python
@@ -20,4 +20,7 @@ _proba : la probabilite de aller directiment
 _gamma : facteur d’actualisation γ
 _display : mode  d'affichage true pour affiche 
 _q :la puissance
-
+_optimizer: 0 pour value iteration
+            1 pour strategie pure
+            2 pour strategie mixte
+            4 pour strategie minmax
