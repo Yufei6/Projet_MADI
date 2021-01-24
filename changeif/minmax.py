@@ -287,13 +287,15 @@ def calculesperance(tab,grill1,n,m,color):
                         +tab[i-1][j-1][6]*(x[i+1,j-1,c]+grill[i+1][j-1][c]) \
                         +tab[i-1][j-1][7]*(x[i+1,j,c]+grill[i+1][j][c]) \
                         +tab[i-1][j-1][8]*(x[i+1,j+1,c]+grill[i+1][j+1][c]))
-                    print(tab[i-1][j-1][4])
+                if(tab[i-1][j-1][4]==1):
+                    print(i,j)
 
     for i in range(n+2) :
         for j in range(m+2):
             if(oldgrill[i][j][0]<=0):
                 for c in range(color):
                     m1.addConstr(x[i,j,c]==0)
+                print(i,j)
 
 
     obj = LinExpr();
