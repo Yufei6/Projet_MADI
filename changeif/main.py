@@ -551,6 +551,7 @@ def calcul_proba_suivi_policy():
 							res[i][j][5] += p * p0
 							res[i][j][2] += p * p1
 							res[i][j][8] += p * p1
+	print("RRRRes", res[:][:][4])
 	return res
 
 
@@ -624,6 +625,8 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 			policy,valeur=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma)
 		elif (_optimizer==5):
 			policy, valeur = multioptimale(nblignes, nbcolonnes, 4, g, proba,gamma,objectif=value_objectif,color=4)
+		elif (_optimizer==6):
+			policy, valeur = multioptimale(nblignes, nbcolonnes, 4, g, proba,gamma,objectif=value_objectif,color=4)
 		# Craation d'un widget Button (bouton Quitter)
 		# Creation d'un widget Button (bouton Quitter)
 		Button(Mafenetre, text ='Restart', command = initialize).pack(side=LEFT,padx=5,pady=5)
@@ -686,9 +689,15 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 
 		elif (_optimizer==5):
 			policy, valeur = multioptimale(nblignes, nbcolonnes, 4, g, proba,gamma,objectif=value_objectif,color=4)
+			t1 = time.time()
+			times_list.append(t1-t0)
+			valeurs_list = valeur
+
+		elif (_optimizer==6):
+			policy, valeur = multioptimale(nblignes, nbcolonnes, 4, g, proba,gamma,objectif=value_objectif,color=4)
+			t1 = time.time()
 			tab = calcul_proba_suivi_policy()
 			valeur = calculesperance(tab,g,nblignes, nbcolonnes,color=4)
-			t1 = time.time()
 			times_list.append(t1-t0)
 			valeurs_list = valeur
 
@@ -818,7 +827,7 @@ def comparer_make_image_4c():
 
 	#on prend une instance et executer 15 fois
 	valeurs_list=[]
-	init_game(nbl, nbc, _proba=0.7, _weight=_weight, _gamma=1, _display=False, _optimizer=5)
+	init_game(nbl, nbc, _proba=0.7, _weight=_weight, _gamma=1, _display=False, _optimizer=6)
 	scores_list1=[]
 	scores_list2=[]
 	scores_list3=[]
