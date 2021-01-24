@@ -96,7 +96,6 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
     # G : matrice des gains
 
     grill=change_grill(grill1,n,m,objectif)
-    print(grill1[n-1][m-1][1])
     
     nbcont = n*m
     nbvar = n*m*nba
@@ -252,7 +251,6 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
     else:
         tab=np.ones((n,m,nba))
         
-    print(tab)
     return tab ,objtab
 def transfergrill(grill,n,m,color):
     newgrill=np.zeros((n+2,m+2,color))
@@ -288,14 +286,12 @@ def calculesperance(tab,grill1,n,m,color):
                         +tab[i-1][j-1][7]*(x[i+1,j,c]+grill[i+1][j][c]) \
                         +tab[i-1][j-1][8]*(x[i+1,j+1,c]+grill[i+1][j+1][c]))
                 if(tab[i-1][j-1][4]==1):
-                    print(i,j)
 
     for i in range(n+2) :
         for j in range(m+2):
             if(oldgrill[i][j][0]<=0):
                 for c in range(color):
                     m1.addConstr(x[i,j,c]==0)
-                print(i,j)
 
 
     obj = LinExpr();
@@ -304,7 +300,6 @@ def calculesperance(tab,grill1,n,m,color):
     m1.setObjective(obj,GRB.MAXIMIZE)
     m1.setParam("OutputFlag",True)
     m1.optimize()
-    print(m1.status)
     tab1=np.zeros(color)
     for c in range(color):
         tab1[c]=x[1,1,c].X

@@ -220,7 +220,6 @@ def initialize():
 	ws.config(text='     total = '+str(cost[0]))
 
 def display_policy():
-	print("ppp",policy)
 	window = Tk()
 	window.title("Politique Total")
 	cv = Canvas(window, width = Largeur, height =Hauteur, bg =mywhite)
@@ -551,7 +550,6 @@ def calcul_proba_suivi_policy():
 							res[i][j][5] += p * p0
 							res[i][j][2] += p * p1
 							res[i][j][8] += p * p1
-	print("RRRRes", res[:][:][4])
 	return res
 
 
@@ -842,15 +840,17 @@ def comparer_make_image_4c():
 	score2 = np.mean(np.array(scores_list2))
 	score3 = np.mean(np.array(scores_list3))
 	score4 = np.mean(np.array(scores_list4))
+	'''
 	valeurs_list[0][0]=0
 	valeurs_list[0][1]=0
 	valeurs_list[0][2]=0
 	valeurs_list[0][3]=0
+	'''
 	#print("Valeur ::: ",valeurs_list)
-	score_espere1 = valeurs_list[0][0]
-	score_espere2 = valeurs_list[0][1]
-	score_espere3 = valeurs_list[0][2]
-	score_espere4 = valeurs_list[0][3]
+	score_espere1 = valeurs_list[0]
+	score_espere2 = valeurs_list[1]
+	score_espere3 = valeurs_list[2]
+	score_espere4 = valeurs_list[3]
 
 
 	name_list = ['Green','Blue','Red','Black']
@@ -864,6 +864,7 @@ def comparer_make_image_4c():
 	plt.bar(x, num_list, width=width, label='moyen 15-tests',fc = 'y')
 	for i in range(len(x)):
 	    x[i] = x[i] + width
+
 	plt.bar(x, num_list1, width=width, label='valeurs espées',tick_label = name_list,fc = 'r')
 	plt.title("Comparaison 4c")
 	plt.savefig('./Results/4C/'+str(p)+"_"+str(nbl)+"mult"+str(nbc)+"_scoreComparaison.jpg")
@@ -884,7 +885,6 @@ def comparer_make_image_4d():
 	policy,valeur=optimale(nblignes, nbcolonnes,4 , g1,proba, gamma=1)
 	reussi_a, score_a = autoWalk()
 	valeur_a = [score_a[0], score_a[1], score_a[2], score_a[3]]
-	print("Reussi (a)? ",reussi_a,'\nReussi (b)? ',reussi_b)
 	name_list = ['Green','Blue','Red','Black']
 	num_list = score_a
 	num_list1 = score_b
