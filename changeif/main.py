@@ -686,9 +686,11 @@ def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _Pos
 
 		elif (_optimizer==5):
 			policy, valeur = multioptimale(nblignes, nbcolonnes, 4, g, proba,gamma,objectif=value_objectif,color=4)
+			tab = calcul_proba_suivi_policy()
+			valeur = calculesperance(tab,g,nblignes, nbcolonnes,color=4)
 			t1 = time.time()
 			times_list.append(t1-t0)
-			valeurs_list.append(valeur)
+			valeurs_list = valeur
 
 
 def comparer_make_images():
@@ -835,6 +837,7 @@ def comparer_make_image_4c():
 	valeurs_list[0][1]=0
 	valeurs_list[0][2]=0
 	valeurs_list[0][3]=0
+	print("Valeur ::: ",valeurs_list)
 	score_espere1 = valeurs_list[0][0]
 	score_espere2 = valeurs_list[0][1]
 	score_espere3 = valeurs_list[0][2]
@@ -923,11 +926,11 @@ if __name__ == "__main__":
 	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color, _optimizer=4)
 
 	#question 4c
-	#comparer_make_image_4c()
+	comparer_make_image_4c()
 
 	#question 4d
 	#comparer_make_image_4d()
 
 
 	#Default mond
-	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=1, _color=_color, _optimizer=_optimizer)
+	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=1, _color=_color, _optimizer=_optimizer)
