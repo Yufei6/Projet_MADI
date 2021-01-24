@@ -698,7 +698,7 @@ def comparer_make_image_4c():
 	ln1, = plt.plot(x, times_mean, color='red')
 	plt.legend(handles=[ln1],labels=['time mean'])
 	plt.title("Moyenne de temps")
-	plt.savefig('./Results/4C/'+str(p)+"_"+str(nbl)+"mult"+str(nbc)+"_time.jpg")
+	plt.savefig('./Results/4C/'+str(p)+"_"+str(nbl)+"mult"+str(nbc)+"_time_4C.jpg")
 	plt.xlabel("Different probability")
 	plt.ylabel("Time mean")
 	plt.show()
