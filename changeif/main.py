@@ -680,29 +680,26 @@ def comparer_make_image_4c():
 	_weight = [0,1,2,3,4,-1]
 	nbl,nbc = 10,15
 	g=1
-	p=1
+	p=0.7
 	times_mean=[]
-	times_mean2=[]
 	times_list=[]
 	for i in range(15):
 		init_game(nbl , nbc, _proba=p, _weight=_weight, _gamma=g, _display=False, _optimizer=5)
 	times_mean.append(np.mean(np.array(times_list)))
-	times_mean.append(np.mean(np.array(times_list)))
 	
-	p=0.7
+	
+	p=1
+	times_list=[]
 	for i in range(15):
 		init_game(nbl , nbc, _proba=p, _weight=_weight, _gamma=g, _display=False, _optimizer=5)
-	print(times_list)
-	times_mean2.append(np.mean(np.array(times_list)))
-	times_mean2.append(np.mean(np.array(times_list)))
+	times_mean.append(np.mean(np.array(times_list)))
 	x = [0.7,1]
 
 	ln1, = plt.plot(x, times_mean, color='red')
-	ln2, = plt.plot(x, times_mean2, color='green')
-	plt.legend(handles=[ln1,ln2],labels=['time p=1','time p=0.7'])
+	plt.legend(handles=[ln1],labels=['time mean'])
 	plt.title("Moyenne de temps")
 	plt.savefig('./Results/4C/'+str(p)+"_"+str(nbl)+"mult"+str(nbc)+"_time.jpg")
-	plt.xlabel("Different p")
+	plt.xlabel("Different probability")
 	plt.ylabel("Time mean")
 	plt.show()
 
@@ -727,6 +724,7 @@ def comparer_make_image_4c():
 	score_espere2 = valeurs_list[0][1]
 	score_espere3 = valeurs_list[0][2]
 	score_espere4 = valeurs_list[0][3]
+
 
 	name_list = ['Green','Blue','Red','Black']
 	num_list = [score1, score2, score3, score4]
