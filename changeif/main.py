@@ -531,7 +531,7 @@ def calcul_proba_suivi_policy():
 						cd = check_down(j+1,i)
 						cl = check_left(j,i)
 						cr = check_right(j,i)
-						if not cl:
+						if not cr:
 							res[i][j][4] += p * 1
 						elif not cu and not cd:
 							res[i][j][5] += p * 1
@@ -837,7 +837,7 @@ def comparer_make_image_4c():
 	valeurs_list[0][1]=0
 	valeurs_list[0][2]=0
 	valeurs_list[0][3]=0
-	print("Valeur ::: ",valeurs_list)
+	#print("Valeur ::: ",valeurs_list)
 	score_espere1 = valeurs_list[0][0]
 	score_espere2 = valeurs_list[0][1]
 	score_espere3 = valeurs_list[0][2]
