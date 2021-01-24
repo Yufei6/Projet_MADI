@@ -308,4 +308,4 @@ def calculesperance(tab,grill1,n,m,color):
     tab1=np.zeros(color)
     for c in range(color):
         tab1[c]=x[1,1,c].X
-    return tab;
+    return tab1;
