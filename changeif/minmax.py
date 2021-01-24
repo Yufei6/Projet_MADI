@@ -268,7 +268,7 @@ def calculesperance(tab,grill1,n,m,color):
     oldgrill=change_grill(grill1)
     grill=transfergrill(oldgrill)
     m1 = Model("mogplex") 
-    x = dict{}
+    x = dict()
     for i in range(n+2) :
         for j in range(m+2):
             for c in color:
@@ -277,22 +277,22 @@ def calculesperance(tab,grill1,n,m,color):
     for i in range(1,n+1):
         for j in range(1,m+1):
             if(i!=n+1 and j!=m+1 ):
-            for c in color:
-                m1.addConstr(x[i][j][c] = tab[i-1][j-1][0]*(x[i-1][j-1][c]+grill[i-1][j-1][c]) \
-                    +tab[i-1][j-1][1]*(x[i-1][j][c]+grill[i-1][j][c]) \
-                    +tab[i-1][j-1][2]*(x[i-1][j+1][c]+grill[i-1][j+1][c]) \
-                    +tab[i-1][j-1][3]*(x[i][j-1][c]+grill[i][j-1][c]) \
-                    +tab[i-1][j-1][4]*(x[i][j][c]+grill[i][j][c]) \
-                    +tab[i-1][j-1][5]*(x[i][j+1][c]+grill[i][j+1][c]) \
-                    +tab[i-1][j-1][6]*(x[i+1][j-1][c]+grill[i+1][j-1][c]) \
-                    +tab[i-1][j-1][7]*(x[i+1][j][c]+grill[i+1][j][c]) \
-                    +tab[i-1][j-1][8]*(x[i+1][j+1][c]+grill[i+1][j+1][c]))
+                for c in color:
+                    m1.addConstr(x[i][j][c] == tab[i-1][j-1][0]*(x[i-1][j-1][c]+grill[i-1][j-1][c]) \
+                        +tab[i-1][j-1][1]*(x[i-1][j][c]+grill[i-1][j][c]) \
+                        +tab[i-1][j-1][2]*(x[i-1][j+1][c]+grill[i-1][j+1][c]) \
+                        +tab[i-1][j-1][3]*(x[i][j-1][c]+grill[i][j-1][c]) \
+                        +tab[i-1][j-1][4]*(x[i][j][c]+grill[i][j][c]) \
+                        +tab[i-1][j-1][5]*(x[i][j+1][c]+grill[i][j+1][c]) \
+                        +tab[i-1][j-1][6]*(x[i+1][j-1][c]+grill[i+1][j-1][c]) \
+                        +tab[i-1][j-1][7]*(x[i+1][j][c]+grill[i+1][j][c]) \
+                        +tab[i-1][j-1][8]*(x[i+1][j+1][c]+grill[i+1][j+1][c]))
 
     for i in range(n+2) :
         for j in range(m+2):
-            if(oldgrill[i][j][0]<=0)
+            if(oldgrill[i][j][0]<=0):
                 for c in color:
-                    m1.addConstr(x[i][j][c]=0)
+                    m1.addConstr(x[i][j][c]==0)
 
 
     obj = LinExpr();
