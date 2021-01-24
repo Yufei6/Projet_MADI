@@ -448,7 +448,7 @@ def calcul_proba_suivi_policy():
 	for i in range(nblignes):
 		for j in range(nbcolonnes):
 			proba_policy = policy[i][j]
-			for k in range(proba_policy):
+			for k in range(len(proba_policy)):
 				p = proba_policy[k]
 				if p>0:
 					if k == 0:
