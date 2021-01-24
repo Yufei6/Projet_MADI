@@ -233,24 +233,24 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
     count=0
     count1=0
     objtab=np.zeros(color)
-    for i in range(n):
-        for j in range(m):
-            tab1=[]
-            if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
-                for a in range(nba):      
-                    v=x[count].X
-                    count+=1
-                    tab1.append(v)
-                sumtab=np.sum(tab1)
-                for a in range(nba):
-                    tab[i][j][a]=tab1[a]/sumtab
-                for obj in range(color):
+    if(m1.status==GRB.OPTIMAL):
+        for i in range(n):
+            for j in range(m):
+                tab1=[]
+                if(grill[i+1][j+1][0]!=0 and (i!=n-1 or j!=m-1)):
+                    for a in range(nba):      
+                        v=x[count].X
+                        count+=1
+                        tab1.append(v)
+                    sumtab=np.sum(tab1)
                     for a in range(nba):
-                        objtab[obj]+=tab[i][j][a]*r[obj][count1+a]
-                count1+=nba
-    for obj in range(color):
-        for a in range(nba):
-            objtab[obj]=tab[0][0][a]*r[obj][a]
-    print(objtab)
+                        tab[i][j][a]=tab1[a]/sumtab
+                    for obj in range(color):
+                        for a in range(nba):
+                            objtab[obj]+=tab[i][j][a]*r[obj][count1+a]
+                    count1+=nba
+    else:
+        tab=np.ones((n,m,nba))
+        
 
     return tab ,objtab
