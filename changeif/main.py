@@ -442,6 +442,117 @@ def set_parameters(nbligness , nbcolonness, probas, weights):
 	weight[4] = weights[4]
 	weight[5] = weights[5]
 
+#cette fonction sert à calculer les valeurs d'espérées
+def calcul_proba_suivi_policy():
+	res = np.zeros((nblignes, nbcolonnes, 9))
+	for i in range(nblignes):
+		for j in range(nbcolonnes):
+			proba_policy = policy[i][j]
+			for k in range(proba_policy):
+				p = proba_policy[k]
+				if p>0:
+					if k == 0:
+						cu = check_up(j,i)
+						cd = check_down(j,i)
+						cl = check_left(j,i-1)
+						cr = check_right(j,i-1)
+						if not cu:
+							res[i][j][4] += p * 1
+						elif not cl and not cr:
+							res[i][j][1] += p * 1
+						elif cl and not cr:
+							p0 = (1+proba) / 2
+							p1 = (1-proba) / 2
+							res[i][j][1] += p * p0
+							res[i][j][0] += p * p1
+						elif not cl and cr:
+							p0 = (1+proba) / 2
+							p1 = (1-proba) / 2
+							res[i][j][1] += p * p0
+							res[i][j][2] += p * p1
+						elif cl and cr:
+							p0 = proba
+							p1 = (1-proba) / 2
+							res[i][j][1] += p * p0
+							res[i][j][0] += p * p1
+							res[i][j][2] += p * p1
+					elif k == 1:
+						cu = check_up(j,i)
+						cd = check_down(j,i)
+						cl = check_left(j,i+1)
+						cr = check_right(j,i+1)
+						if not cd:
+							res[i][j][4] += p * 1
+						elif not cl and not cr:
+							res[i][j][7] += p * 1
+						elif cl and not cr:
+							p0 = (1+proba) / 2
+							p1 = (1-proba) / 2
+							res[i][j][7] += p * p0
+							res[i][j][6] += p * p1
+						elif not cl and cr:
+							p0 = (1+proba) / 2
+							p1 = (1-proba) / 2
+							res[i][j][7] += p * p0
+							res[i][j][8] += p * p1
+						elif cl and cr:
+							p0 = proba
+							p1 = (1-proba) / 2
+							res[i][j][7] += p * p0
+							res[i][j][6] += p * p1
+							res[i][j][8] += p * p1
+					elif k == 2:
+						cu = check_up(j-1,i)
+						cd = check_down(j-1,i)
+						cl = check_left(j,i)
+						cr = check_right(j,i)
+						if not cl:
+							res[i][j][4] += p * 1
+						elif not cu and not cd:
+							res[i][j][3] += p * 1
+						elif cu and not cd:
+							p0 = (1+proba) / 2
+							p1 = (1-proba) / 2
+							res[i][j][3] += p * p0
+							res[i][j][0] += p * p1
+						elif not cu and cd:
+							p0 = (1+proba) / 2
+							p1 = (1-proba) / 2
+							res[i][j][3] += p * p0
+							res[i][j][6] += p * p1
+						elif cu and cd:
+							p0 = proba
+							p1 = (1-proba) / 2
+							res[i][j][3] += p * p0
+							res[i][j][0] += p * p1
+							res[i][j][6] += p * p1
+					elif k == 3:
+						cu = check_up(j+1,i)
+						cd = check_down(j+1,i)
+						cl = check_left(j,i)
+						cr = check_right(j,i)
+						if not cl:
+							res[i][j][4] += p * 1
+						elif not cu and not cd:
+							res[i][j][5] += p * 1
+						elif cu and not cd:
+							p0 = (1+proba) / 2
+							p1 = (1-proba) / 2
+							res[i][j][5] += p * p0
+							res[i][j][2] += p * p1
+						elif not cu and cd:
+							p0 = (1+proba) / 2
+							p1 = (1-proba) / 2
+							res[i][j][5] += p * p0
+							res[i][j][8] += p * p1
+						elif cu and cd:
+							p0 = proba
+							p1 = (1-proba) / 2
+							res[i][j][5] += p * p0
+							res[i][j][2] += p * p1
+							res[i][j][8] += p * p1
+	return res
+
 
 def init_game(_nblignes , _nbcolonness, _proba, _weight, _zoom=2, _PosX=20, _PosY=20, _gamma=0.9, _display=True, _q=1, _color=False, _optimizer=0):
 	global g, cost, Pion, zoom, PosX, PosY, Canevas, policy, Largeur, Hauteur, times_list, iterations_list, valeurs_list, times_list2, valeurs_list2
@@ -718,6 +829,10 @@ def comparer_make_image_4c():
 	score2 = np.mean(np.array(scores_list2))
 	score3 = np.mean(np.array(scores_list3))
 	score4 = np.mean(np.array(scores_list4))
+	valeurs_list[0][0]=0
+	valeurs_list[0][1]=0
+	valeurs_list[0][2]=0
+	valeurs_list[0][3]=0
 	score_espere1 = valeurs_list[0][0]
 	score_espere2 = valeurs_list[0][1]
 	score_espere3 = valeurs_list[0][2]
@@ -789,12 +904,12 @@ if __name__ == "__main__":
 	_weight = [0,1,2,3,4,-1]
 	_gamma = 0.9
 	_display = True
-	_q = 5
+	_q = 1
 	_color = False 
 	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color)
 
 	#question 2d
-	_color = True
+	#_color = True
 	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color)
 
 	#question 3c
@@ -804,11 +919,11 @@ if __name__ == "__main__":
 	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=_q, _color=_color, _optimizer=4)
 
 	#question 4c
-	#comparer_make_image_4c()
+	comparer_make_image_4c()
 
 	#question 4d
 	#comparer_make_image_4d()
 
 
 	#Default mond
-	init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=1, _color=_color)
+	#init_game(_nblignes , _nbcolonness, _proba=_proba, _weight=_weight, _gamma=_gamma, _display=_display, _q=1, _color=_color)
