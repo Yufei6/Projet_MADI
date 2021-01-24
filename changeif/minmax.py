@@ -254,3 +254,55 @@ def multioptimale(n,m,nba,grill1,p,gamma,objectif,color):
         
 
     return tab ,objtab
+def transfergrill(grill,n,m,color):
+    newgrill=np.zeros((n+2,m+2,color))
+    for i in range(n+2):
+        for j in range(m+2):
+            if(i!=n+1 and j!=m+1 ):
+                for c in color:
+                    if(grill[i][j][0]==c+1):
+                        newgrill[i][j][c]=grill[i][j][1]
+    return newgrill
+
+def calculesperance(tab,grill1,n,m,color):
+    oldgrill=change_grill(grill1)
+    grill=transfergrill(oldgrill)
+    m1 = Model("mogplex") 
+    x = dict{}
+    for i in range(n+2) :
+        for j in range(m+2):
+            for c in color:
+                x[i][j][c]=m1.addVar(vtype=GRB.CONTINUOUS, lb=0)
+    m1.update()
+    for i in range(1,n+1):
+        for j in range(1,m+1):
+            if(i!=n+1 and j!=m+1 ):
+            for c in color:
+                m1.addConstr(x[i][j][c] = tab[i-1][j-1][0]*(x[i-1][j-1][c]+grill[i-1][j-1][c]) \
+                    +tab[i-1][j-1][1]*(x[i-1][j][c]+grill[i-1][j][c]) \
+                    +tab[i-1][j-1][2]*(x[i-1][j+1][c]+grill[i-1][j+1][c]) \
+                    +tab[i-1][j-1][3]*(x[i][j-1][c]+grill[i][j-1][c]) \
+                    +tab[i-1][j-1][4]*(x[i][j][c]+grill[i][j][c]) \
+                    +tab[i-1][j-1][5]*(x[i][j+1][c]+grill[i][j+1][c]) \
+                    +tab[i-1][j-1][6]*(x[i+1][j-1][c]+grill[i+1][j-1][c]) \
+                    +tab[i-1][j-1][7]*(x[i+1][j][c]+grill[i+1][j][c]) \
+                    +tab[i-1][j-1][8]*(x[i+1][j+1][c]+grill[i+1][j+1][c]))
+
+    for i in range(n+2) :
+        for j in range(m+2):
+            if(oldgrill[i][j][0]<=0)
+                for c in color:
+                    m1.addConstr(x[i][j][c]=0)
+
+
+    obj = LinExpr();
+    for c in color:
+        obj +=x[1][1][c]
+    m1.setObjective(obj,GRB.MINIMIZE)
+    m1.setParam("OutputFlag",True)
+    m1.optimize()
+    print(obj)
+    tab1=np.zeros(color)
+    for c in color:
+        tab1[c]=x[1][1][c].X
+    return tab;
